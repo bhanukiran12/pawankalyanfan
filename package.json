@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "dev:web": "npm run dev --workspace=@pkf/web",
+    "dev:web:clean": "npm run dev:clean --workspace=@pkf/web",
     "dev:gateway": "npm run build:packages && npm run dev --workspace=@pkf/api-gateway",
     "dev:services": "npm run build:packages && turbo run dev --filter=@pkf/auth-service --filter=@pkf/content-service --filter=@pkf/community-service --filter=@pkf/billing-service --filter=@pkf/ai-service",
     "dev:all": "npm run build:packages && turbo run dev --filter=@pkf/auth-service --filter=@pkf/content-service --filter=@pkf/community-service --filter=@pkf/billing-service --filter=@pkf/ai-service --filter=@pkf/api-gateway",
