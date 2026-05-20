@@ -125,17 +125,11 @@ See `.env.example`. Key variables:
 └── turbo.json
 ```
 
-## Deployment (Render + Docker)
+## Deployment (Render — one Docker service)
 
-Use the included [Render Blueprint](render.yaml):
+Use the root [`Dockerfile`](Dockerfile) or [`render.yaml`](render.yaml) blueprint — **one** web service runs the API (internal) and Next.js site (public).
 
-| Service | Dockerfile | Description |
-|---------|------------|-------------|
-| `pawankalyanfan-api` | `Dockerfile.backend` | Gateway + all microservices in one container |
-| `pawankalyanfan-web` | `Dockerfile.web` | Next.js standalone frontend |
-| `pawankalyanfan-db` | — | Render PostgreSQL (or use Neon) |
-
-**Steps:** Push to GitHub → Render Dashboard → **New** → **Blueprint** → connect repo → deploy → run `npm run db:seed` on the API service shell.
+**Steps:** Push to GitHub → Render → **Blueprint** or **Web Service (Docker)** → Dockerfile: `Dockerfile` → deploy → Shell: `npm run db:seed`.
 
 Full guide: [docs/RENDER.md](docs/RENDER.md)
 

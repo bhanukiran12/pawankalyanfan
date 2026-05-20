@@ -1,8 +1,5 @@
-# Render Blueprint — https://render.com/docs/blueprint-spec
-# Deploy: Dashboard → New → Blueprint → connect this repo
-#
-# Optional: use Neon instead of Render Postgres — set DATABASE_URL / DIRECT_URL
-# on pawankalyanfan-api and remove the database block below.
+# Render Blueprint — ONE web service (full stack in one Docker container)
+# https://render.com/docs/blueprint-spec
 
 databases:
   - name: pawankalyanfan-db
@@ -11,14 +8,13 @@ databases:
     plan: free
 
 services:
-  # API gateway + all microservices in one container (cost-efficient)
   - type: web
-    name: pawankalyanfan-api
+    name: pawankalyanfan
     runtime: docker
     dockerContext: .
     dockerfilePath: ./Dockerfile
     plan: starter
-    healthCheckPath: /api/health
+    healthCheckPath: /
     releaseCommand: npx prisma db push --schema=packages/database/prisma/schema.prisma --accept-data-loss
     envVars:
       - key: NODE_ENV
@@ -43,47 +39,20 @@ services:
         value: http://127.0.0.1:4004
       - key: AI_SERVICE_URL
         value: http://127.0.0.1:4005
+      - key: API_GATEWAY_URL
+        value: http://127.0.0.1:4000
+      - key: API_GATEWAY_HOST
+        value: 127.0.0.1:4000
+      - key: NEXT_PUBLIC_API_URL
+        value: /api
+      - key: NEXT_PUBLIC_SITE_URL
+        fromService:
+          type: web
+          name: pawankalyanfan
+          property: host
       - key: OPENROUTER_API_KEY
         sync: false
       - key: RAZORPAY_KEY_ID
         sync: false
       - key: RAZORPAY_KEY_SECRET
         sync: false
-      # Optional: redirect API root to fan site if someone hits the API domain
-      - key: PUBLIC_WEB_URL
-        fromService:
-          type: web
-          name: pawankalyanfan-web
-          property: host
-
-  # Next.js frontend (Docker + standalone output)
-  - type: web
-    name: pawankalyanfan-web
-    runtime: docker
-    dockerContext: .
-    dockerfilePath: ./Dockerfile.web
-    plan: starter
-    healthCheckPath: /
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: NEXT_PUBLIC_API_URL
-        value: /api
-      - key: API_GATEWAY_HOST
-        fromService:
-          type: web
-          name: pawankalyanfan-api
-          property: host
-      # Optional override (full URL): https://pawankalyanfan-api.onrender.com
-      - key: API_GATEWAY_URL
-        sync: false
-      - key: WEB_HOST
-        fromService:
-          type: web
-          name: pawankalyanfan-web
-          property: host
-      - key: NEXT_PUBLIC_SITE_URL
-        fromService:
-          type: web
-          name: pawankalyanfan-web
-          property: host

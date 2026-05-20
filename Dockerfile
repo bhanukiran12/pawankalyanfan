@@ -1,7 +1,5 @@
-# Default Dockerfile for Render (API gateway + microservices).
-# Same as Dockerfile.backend — use Dockerfile.web for the Next.js frontend service.
-# Combined API gateway + microservices for Render (single web service)
-FROM node:20-alpine AS builder
+# Single Render service: API (internal :4000) + Next.js fan site (public PORT)
+FROM node:20-alpine AS backend-builder
 WORKDIR /app
 
 RUN apk add --no-cache openssl libc6-compat
@@ -27,20 +25,40 @@ RUN npm run build --workspace=@pkf/shared && \
     npm run build --workspace=@pkf/ai-service && \
     npm run build --workspace=@pkf/api-gateway
 
+FROM node:20-alpine AS web-builder
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+COPY apps/web ./apps/web
+
+RUN npm ci --workspace=@pkf/web --include-workspace-root
+
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NEXT_PUBLIC_API_URL=/api
+
+RUN npm run build --workspace=@pkf/web
+
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+ENV HOSTNAME=0.0.0.0
+ENV NEXT_PUBLIC_API_URL=/api
+ENV API_GATEWAY_URL=http://127.0.0.1:4000
+ENV API_GATEWAY_HOST=127.0.0.1:4000
 
 RUN apk add --no-cache openssl libc6-compat
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/packages ./packages
-COPY --from=builder /app/services ./services
-COPY --from=builder /app/package.json ./
-COPY scripts/start-render-backend.sh ./scripts/start-render-backend.sh
+COPY --from=backend-builder /app/node_modules ./node_modules
+COPY --from=backend-builder /app/packages ./packages
+COPY --from=backend-builder /app/services ./services
+COPY --from=backend-builder /app/package.json ./
+COPY --from=web-builder /app/apps/web/.next/standalone ./
+COPY --from=web-builder /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=web-builder /app/apps/web/public ./apps/web/public
+COPY scripts/start-render.sh ./scripts/start-render.sh
 
-RUN chmod +x ./scripts/start-render-backend.sh
+RUN chmod +x ./scripts/start-render.sh
 
-EXPOSE 4000
+EXPOSE 3000
 
-CMD ["./scripts/start-render-backend.sh"]
+CMD ["./scripts/start-render.sh"]
