@@ -1,0 +1,78 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Deploy: Dashboard → New → Blueprint → connect this repo
+#
+# Optional: use Neon instead of Render Postgres — set DATABASE_URL / DIRECT_URL
+# on pawankalyanfan-api and remove the database block below.
+
+databases:
+  - name: pawankalyanfan-db
+    databaseName: pawankalyanfan
+    user: pawankalyanfan
+    plan: free
+
+services:
+  # API gateway + all microservices in one container (cost-efficient)
+  - type: web
+    name: pawankalyanfan-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile.backend
+    plan: starter
+    healthCheckPath: /api/health
+    releaseCommand: npx prisma db push --schema=packages/database/prisma/schema.prisma --accept-data-loss
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pawankalyanfan-db
+          property: connectionString
+      - key: DIRECT_URL
+        fromDatabase:
+          name: pawankalyanfan-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: AUTH_SERVICE_URL
+        value: http://127.0.0.1:4001
+      - key: CONTENT_SERVICE_URL
+        value: http://127.0.0.1:4002
+      - key: COMMUNITY_SERVICE_URL
+        value: http://127.0.0.1:4003
+      - key: BILLING_SERVICE_URL
+        value: http://127.0.0.1:4004
+      - key: AI_SERVICE_URL
+        value: http://127.0.0.1:4005
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+
+  # Next.js frontend (Docker + standalone output)
+  - type: web
+    name: pawankalyanfan-web
+    runtime: docker
+    dockerfilePath: ./Dockerfile.web
+    plan: starter
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: /api
+      - key: API_GATEWAY_HOST
+        fromService:
+          type: web
+          name: pawankalyanfan-api
+          property: host
+      - key: WEB_HOST
+        fromService:
+          type: web
+          name: pawankalyanfan-web
+          property: host
+      - key: NEXT_PUBLIC_SITE_URL
+        fromService:
+          type: web
+          name: pawankalyanfan-web
+          property: host

@@ -1,6 +1,12 @@
+function publicSiteUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL || "https://pawankalyanfan.com";
+  if (raw.startsWith("http://") || raw.startsWith("https://")) return raw.replace(/\/$/, "");
+  return `https://${raw.replace(/\/$/, "")}`;
+}
+
 export const SITE = {
   name: "PawanKalyanFan",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://pawankalyanfan.com",
+  url: publicSiteUrl(),
   logo: "https://res.cloudinary.com/df7wnybwg/image/upload/v1779281316/pawankalaynfan/movies/pawan_kalayn_fan_logo_tuzxjy.png",
   /** Visible on-site tagline — single fan voice, no feature lists */
   tagline: "Built by a fan. For every soul that stands with Pawan Kalyan.",

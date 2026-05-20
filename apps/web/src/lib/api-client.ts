@@ -1,4 +1,33 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+/** Browser uses same-origin /api (rewrites to gateway). SSR calls gateway directly. */
+function resolveApiBaseUrl(): string {
+  const publicUrl = process.env.NEXT_PUBLIC_API_URL || "/api";
+
+  if (typeof window !== "undefined") {
+    return publicUrl.startsWith("http") ? publicUrl.replace(/\/$/, "") : publicUrl;
+  }
+
+  const gateway = process.env.API_GATEWAY_URL || process.env.API_GATEWAY_HOST;
+  if (gateway) {
+    const base = gateway.startsWith("http") ? gateway.replace(/\/$/, "") : `https://${gateway}`;
+    return base.endsWith("/api") ? base : `${base}/api`;
+  }
+
+  if (publicUrl.startsWith("/")) {
+    const site = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL || "http://localhost:3000";
+    const origin = site.startsWith("http")
+      ? site.replace(/\/$/, "")
+      : site.includes(".")
+        ? `https://${site.replace(/\/$/, "")}`
+        : `http://localhost:3000`;
+    return `${origin}${publicUrl}`;
+  }
+
+  return publicUrl.replace(/\/$/, "").endsWith("/api")
+    ? publicUrl.replace(/\/$/, "")
+    : `${publicUrl.replace(/\/$/, "")}/api`;
+}
+
+const API_URL = resolveApiBaseUrl();
 
 type FetchOptions = RequestInit;
 

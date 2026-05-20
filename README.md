@@ -125,13 +125,18 @@ See `.env.example`. Key variables:
 └── turbo.json
 ```
 
-## Deployment
+## Deployment (Render + Docker)
 
-| Component | Platform |
-|-----------|----------|
-| **web** | Vercel |
-| **api-gateway** | Railway / Fly.io |
-| **microservices** | Railway (one service per container) |
-| **database** | Supabase PostgreSQL |
+Use the included [Render Blueprint](render.yaml):
+
+| Service | Dockerfile | Description |
+|---------|------------|-------------|
+| `pawankalyanfan-api` | `Dockerfile.backend` | Gateway + all microservices in one container |
+| `pawankalyanfan-web` | `Dockerfile.web` | Next.js standalone frontend |
+| `pawankalyanfan-db` | — | Render PostgreSQL (or use Neon) |
+
+**Steps:** Push to GitHub → Render Dashboard → **New** → **Blueprint** → connect repo → deploy → run `npm run db:seed` on the API service shell.
+
+Full guide: [docs/RENDER.md](docs/RENDER.md)
 
 > **Disclaimer:** This is an unofficial fan-created community and is not affiliated with or endorsed by Pawan Kalyan or any official organization.
