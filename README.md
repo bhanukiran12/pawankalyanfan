@@ -86,6 +86,16 @@ npm run dev:web
 docker-compose up --build
 ```
 
+### Deploy on Render
+
+See **[docs/RENDER.md](docs/RENDER.md)**. One-click Blueprint from `render.yaml`:
+
+- **pawankalyanfan-api** — Docker image (gateway + microservices)
+- **pawankalyanfan-web** — Next.js
+- **pawankalyanfan-db** — PostgreSQL (optional; Neon works too)
+
+After deploy, run `npm run db:seed` once against production `DATABASE_URL`.
+
 ## Environment Variables
 
 See `.env.example`. Key variables:
