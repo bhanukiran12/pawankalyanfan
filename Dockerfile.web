@@ -9,7 +9,7 @@ RUN npm ci --workspace=@pkf/web --include-workspace-root
 
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NEXT_PUBLIC_API_URL=/api
-# API_GATEWAY_HOST / NEXT_PUBLIC_SITE_URL injected by Render at build time
+# API_GATEWAY_HOST is read at runtime by /api/[...path] proxy (not at build time)
 
 RUN npm run build --workspace=@pkf/web
 

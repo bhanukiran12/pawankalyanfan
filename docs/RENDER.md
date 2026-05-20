@@ -23,8 +23,15 @@ This repo ships a [Render Blueprint](https://render.com/docs/blueprint-spec) (`r
    npm run db:seed
    ```
 
-5. On `pawankalyanfan-web`, set `NEXT_PUBLIC_SITE_URL` to `https://<your-web-hostname>` if the auto value is missing the `https://` prefix (Render host only).
-6. Open the `pawankalyanfan-web` URL.
+5. On `pawankalyanfan-web`, confirm **`API_GATEWAY_HOST`** is set (from the API service). Optional: set `API_GATEWAY_URL` to `https://<api-host>.onrender.com` if proxy calls fail.
+6. Open the **`pawankalyanfan-web`** URL (not the API URL). The API root (`pawankalyanfan-api`) only serves `/api/*`.
+
+### Browser shows `404` on `(index)` or empty pages
+
+- Open the **web** service URL, not `pawankalyanfan-api`.
+- Redeploy **web** after this fix: `/api` is proxied at **runtime** to the gateway (not baked in at Docker build).
+- In DevTools → Network, check `/api/home` — should be **200**, not 404.
+- Run `npm run db:seed` on the API service if responses are 200 but lists are empty.
 
 ## Environment variables
 

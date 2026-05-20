@@ -111,6 +111,15 @@ app.get("/api/admin", authMiddleware, async (req, res) => {
   }
 });
 
+app.get("/", (_req, res) => {
+  res.json({
+    success: true,
+    message: "PawanKalyanFan API gateway",
+    health: "/api/health",
+    hint: "Use the pawankalyanfan-web service URL for the fan site.",
+  });
+});
+
 // ─── Gateway health (all services) ────────────────────────
 app.get("/api/health", async (_req, res) => {
   const services = [

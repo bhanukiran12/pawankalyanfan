@@ -68,6 +68,9 @@ services:
           type: web
           name: pawankalyanfan-api
           property: host
+      # Optional override (full URL): https://pawankalyanfan-api.onrender.com
+      - key: API_GATEWAY_URL
+        sync: false
       - key: WEB_HOST
         fromService:
           type: web

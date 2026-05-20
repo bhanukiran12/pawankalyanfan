@@ -1,4 +1,6 @@
-/** Browser uses same-origin /api (rewrites to gateway). SSR calls gateway directly. */
+import { getGatewayOrigin } from "@/lib/gateway-url";
+
+/** Browser uses same-origin /api (runtime proxy). SSR calls gateway directly when configured. */
 function resolveApiBaseUrl(): string {
   const publicUrl = process.env.NEXT_PUBLIC_API_URL || "/api";
 
@@ -8,7 +10,7 @@ function resolveApiBaseUrl(): string {
 
   const gateway = process.env.API_GATEWAY_URL || process.env.API_GATEWAY_HOST;
   if (gateway) {
-    const base = gateway.startsWith("http") ? gateway.replace(/\/$/, "") : `https://${gateway}`;
+    const base = getGatewayOrigin();
     return base.endsWith("/api") ? base : `${base}/api`;
   }
 
