@@ -10,12 +10,12 @@ declare global {
   }
 }
 
-export function success<T>(res: Response, data: T, status = 200) {
-  return res.status(status).json({ success: true, data });
+export function success<T>(res: Response, data: T, status = 200): void {
+  res.status(status).json({ success: true, data });
 }
 
-export function error(res: Response, message: string, status = 400) {
-  return res.status(status).json({ success: false, error: message });
+export function error(res: Response, message: string, status = 400): void {
+  res.status(status).json({ success: false, error: message });
 }
 
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
@@ -47,9 +47,13 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction) {
 }
 
 export function asyncHandler(
-  fn: (req: import("express").Request, res: import("express").Response, next: import("express").NextFunction) => Promise<void>
+  fn: (
+    req: import("express").Request,
+    res: import("express").Response,
+    next: import("express").NextFunction,
+  ) => void | Promise<void>,
 ) {
   return (req: import("express").Request, res: import("express").Response, next: import("express").NextFunction) => {
-    fn(req, res, next).catch(next);
+    Promise.resolve(fn(req, res, next)).catch(next);
   };
 }
