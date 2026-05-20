@@ -1,6 +1,3 @@
-# Local / production-like stack (matches Render: one API container + web)
-# For per-service dev, use: npm run dev:services && npm run dev:gateway && npm run dev:web
-
 version: "3.8"
 
 services:
@@ -15,39 +12,103 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  api-gateway:
+  auth-service:
     build:
       context: .
-      dockerfile: Dockerfile.backend
+      dockerfile: services/auth-service/Dockerfile
     ports:
-      - "4000:4000"
-    env_file:
-      - .env
+      - "4001:4001"
     environment:
       DATABASE_URL: postgresql://postgres:password@postgres:5432/pawankalyanfan
-      DIRECT_URL: postgresql://postgres:password@postgres:5432/pawankalyanfan
-      AUTH_SERVICE_URL: http://127.0.0.1:4001
-      CONTENT_SERVICE_URL: http://127.0.0.1:4002
-      COMMUNITY_SERVICE_URL: http://127.0.0.1:4003
-      BILLING_SERVICE_URL: http://127.0.0.1:4004
-      AI_SERVICE_URL: http://127.0.0.1:4005
-      PORT: 4000
+      JWT_SECRET: ${JWT_SECRET}
+      PORT: 4001
     depends_on:
       - postgres
 
+  content-service:
+    build:
+      context: .
+      dockerfile: services/content-service/Dockerfile
+    ports:
+      - "4002:4002"
+    environment:
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/pawankalyanfan
+      JWT_SECRET: ${JWT_SECRET}
+      PORT: 4002
+    depends_on:
+      - postgres
+
+  community-service:
+    build:
+      context: .
+      dockerfile: services/community-service/Dockerfile
+    ports:
+      - "4003:4003"
+    environment:
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/pawankalyanfan
+      JWT_SECRET: ${JWT_SECRET}
+      PORT: 4003
+    depends_on:
+      - postgres
+
+  billing-service:
+    build:
+      context: .
+      dockerfile: services/billing-service/Dockerfile
+    ports:
+      - "4004:4004"
+    environment:
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/pawankalyanfan
+      JWT_SECRET: ${JWT_SECRET}
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET}
+      PORT: 4004
+    depends_on:
+      - postgres
+
+  ai-service:
+    build:
+      context: .
+      dockerfile: services/ai-service/Dockerfile
+    ports:
+      - "4005:4005"
+    environment:
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/pawankalyanfan
+      JWT_SECRET: ${JWT_SECRET}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      PORT: 4005
+    depends_on:
+      - postgres
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      AUTH_SERVICE_URL: http://auth-service:4001
+      CONTENT_SERVICE_URL: http://content-service:4002
+      COMMUNITY_SERVICE_URL: http://community-service:4003
+      BILLING_SERVICE_URL: http://billing-service:4004
+      AI_SERVICE_URL: http://ai-service:4005
+      PORT: 4000
+    depends_on:
+      - auth-service
+      - content-service
+      - community-service
+      - billing-service
+      - ai-service
+
   web:
-    image: node:20-alpine
-    working_dir: /app
-    command: sh -c "npm ci && npm run build --workspace=@pkf/web && npm run start --workspace=@pkf/web"
-    volumes:
-      - .:/app
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
     ports:
       - "3000:3000"
-    env_file:
-      - .env
     environment:
-      NEXT_PUBLIC_API_URL: /api
-      API_GATEWAY_URL: http://api-gateway:4000
+      NEXT_PUBLIC_API_URL: http://localhost:4000/api
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
     depends_on:
       - api-gateway

@@ -86,16 +86,6 @@ npm run dev:web
 docker-compose up --build
 ```
 
-### Deploy on Render
-
-See **[docs/RENDER.md](docs/RENDER.md)**. One-click Blueprint from `render.yaml`:
-
-- **pawankalyanfan-api** — Docker image (gateway + microservices)
-- **pawankalyanfan-web** — Next.js
-- **pawankalyanfan-db** — PostgreSQL (optional; Neon works too)
-
-After deploy, run `npm run db:seed` once against production `DATABASE_URL`.
-
 ## Environment Variables
 
 See `.env.example`. Key variables:
@@ -140,8 +130,8 @@ See `.env.example`. Key variables:
 | Component | Platform |
 |-----------|----------|
 | **web** | Vercel |
-| **api-gateway** | Railway / Render / Fly.io |
-| **microservices** | Railway / Render (one service per container) |
+| **api-gateway** | Railway / Fly.io |
+| **microservices** | Railway (one service per container) |
 | **database** | Supabase PostgreSQL |
 
 > **Disclaimer:** This is an unofficial fan-created community and is not affiliated with or endorsed by Pawan Kalyan or any official organization.
