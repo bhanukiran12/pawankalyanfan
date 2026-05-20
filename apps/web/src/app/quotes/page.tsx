@@ -6,6 +6,7 @@ import { api, Quote } from "@/lib/api-client";
 import { QuoteCard, QuoteFilters } from "@/components/quotes/quote-card";
 import { PageHeading } from "@/components/layout/page-heading";
 import { PageShell } from "@/components/layout/section-background";
+import { FadeIn } from "@/components/motion/fade-in";
 import { PageLoader } from "@/components/ui/skeleton";
 
 export default function QuotesPage() {

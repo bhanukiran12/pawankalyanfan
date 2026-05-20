@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { Mail } from "lucide-react";
 import { BrandCollaborations } from "@/components/home/brand-collaborations";
 import { SiteLogo } from "@/components/layout/site-logo";
 import { PageShell } from "@/components/layout/section-background";

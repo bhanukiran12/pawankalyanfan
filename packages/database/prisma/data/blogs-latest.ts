@@ -12,47 +12,8 @@ export type BlogSeedLatest = {
   coverImage?: string | null;
 };
 
-const MODI_IMAGE =
-  "https://res.cloudinary.com/df7wnybwg/image/upload/v1779285748/pawankalaynfan/movies/modi_visits_DCM_hous_of_AP_dvjjab.avif";
-
-/** Latest trending Pawan Kalyan topics + PM Modi visit */
+/** Latest trending Pawan Kalyan topics */
 export const blogsLatest: BlogSeedLatest[] = [
-  {
-    title: "PM Modi Visits Deputy CM Pawan Kalyan's House: A Historic Andhra Pradesh Moment",
-    slug: "pm-modi-visits-pawan-kalyan-deputy-cm-house",
-    excerpt:
-      "Prime Minister Narendra Modi visited Pawan Kalyan's residence and met his family — a widely discussed moment linking national leadership with Andhra's Deputy Chief Minister and Jana Sena.",
-    tags: ["PM Modi", "Pawan Kalyan", "Deputy CM", "Jana Sena", "Andhra Pradesh", "Politics"],
-    publishedAt: "2025-05-19",
-    featured: true,
-    coverImage: MODI_IMAGE,
-    highlights: [
-      {
-        type: "trivia",
-        text: "PM Modi met Pawan Kalyan at the Deputy Chief Minister's residence in a widely reported courtesy visit.",
-        source: "National media",
-      },
-      {
-        type: "speech",
-        text: "Politics is for my country.",
-        source: "Pawan Kalyan",
-      },
-      {
-        type: "quote",
-        text: "Family ante enti, blood kaadu... it's about standing together",
-        source: "Attarintiki Daredi",
-      },
-    ],
-    content: `In May 2025, Prime Minister Narendra Modi's visit to Deputy Chief Minister Pawan Kalyan's residence became one of the most searched political stories in Andhra Pradesh and across Indian social media. Photographs from the meeting showed PM Modi with Pawan Kalyan, family members, and close relatives in a warm, formal setting — signalling respect between the Centre and a key NDA partner in the state.
-
-For supporters of Pawan Kalyan, the visit carried symbolic weight beyond protocol. Jana Sena's role in the TDP–BJP–Jana Sena alliance had already elevated the party's executive influence; a Prime Ministerial visit to the Deputy CM's home reinforced that Pawan Kalyan is now a central figure in both state governance and national coalition politics.
-
-Neutral observers noted several themes: coalition stability after the 2024 elections, alignment on rural development and infrastructure narratives, and the continued blending of cinema fame with ministerial responsibility. Critics and commentators debated optics versus policy outcomes, but agreed the event generated exceptional public attention.
-
-Media coverage highlighted Pawan Kalyan's transition from Power Star to Deputy CM — a leader who commands film-industry-scale crowds now hosting the Prime Minister at his residence. For fan communities and politically engaged readers, the moment sits alongside Jal Jeevan Mission progress and panchayat development as part of a broader story: Pawan Kalyan operating inside the system he once challenged from the outside.
-
-This article is an independent fan-site editorial summarising widely reported public events. It is not affiliated with any government office or political party.`,
-  },
   {
     title: "They Call Him OG: Why Pawan Kalyan's Next Film Dominates Google Trends",
     slug: "they-call-him-og-pawan-kalyan-updates",
@@ -248,6 +209,6 @@ Critics and opposition voices question pace of delivery in lagging districts, co
 
 Balanced coverage does not require false equivalence; it requires clarity about evidence. Ministerial leadership can accelerate approvals and monitoring, but institutions ultimately determine sustainability. Pawan Kalyan's political searches in 2025 often pair "achievement" and "controversy" keywords — a sign of polarised attention rather than indifference.
 
-For informed fans, engaging both praise and scrutiny strengthens democratic culture. PawanKalyanFan aims to document admiration without claiming official authority: celebrate milestones like PM Modi's courtesy visit or 21-for-21 victories, while encouraging readers to verify scheme progress through public reports and local journalism.`,
+For informed fans, engaging both praise and scrutiny strengthens democratic culture. PawanKalyanFan aims to document admiration without claiming official authority: celebrate milestones like the 21-for-21 election result, while encouraging readers to verify scheme progress through public reports and local journalism.`,
   },
 ];

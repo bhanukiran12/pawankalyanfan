@@ -13,17 +13,6 @@ export const SITE = {
   locale: "en_IN",
 } as const;
 
-/** PM Modi visit to Deputy CM Pawan Kalyan's residence — featured news */
-export const MODI_VISIT_NEWS = {
-  title: "PM Modi Visits Deputy CM Pawan Kalyan's Residence in Andhra Pradesh",
-  excerpt:
-    "Prime Minister Narendra Modi met Pawan Kalyan and family at the Deputy Chief Minister's home — a landmark moment for Jana Sena, Andhra politics, and national leadership ties.",
-  image:
-    "https://res.cloudinary.com/df7wnybwg/image/upload/v1779285748/pawankalaynfan/movies/modi_visits_DCM_hous_of_AP_dvjjab.avif",
-  blogHref: "/blogs/pm-modi-visits-pawan-kalyan-deputy-cm-house",
-  eventDate: "2025-05-19",
-} as const;
-
 export const NAV_LINKS = [
   { href: "/movies", label: "Movies" },
   { href: "/quotes", label: "Quotes" },

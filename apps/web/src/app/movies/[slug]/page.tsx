@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { MoviePoster, posterSrc } from "@/components/movies/movie-poster";
+import { posterSrc } from "@/components/movies/movie-poster";
 import { PageShell } from "@/components/layout/section-background";
 import { InContentAd } from "@/components/ads/ad-block";
 import { PageLoader } from "@/components/ui/skeleton";

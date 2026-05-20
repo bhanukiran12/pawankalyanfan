@@ -11,20 +11,7 @@ export type TimelineEventSeed = {
   imageUrl?: string;
 };
 
-const MODI_VISIT_IMAGE =
-  "https://res.cloudinary.com/df7wnybwg/image/upload/v1779285748/pawankalaynfan/movies/modi_visits_DCM_hous_of_AP_dvjjab.avif";
-
 export const eventsTimeline: TimelineEventSeed[] = [
-  {
-    title: "PM Modi Visits Deputy CM Pawan Kalyan's Residence",
-    slug: "pm-modi-visits-pawan-kalyan-home",
-    eventDate: "2025-05-19",
-    category: "Politics",
-    description:
-      "Prime Minister Narendra Modi met Pawan Kalyan and family at the Deputy Chief Minister's home — a landmark courtesy visit widely covered in national media.",
-    featured: true,
-    imageUrl: MODI_VISIT_IMAGE,
-  },
   {
     title: "Deputy Chief Minister — Oath as Andhra Pradesh DCM",
     slug: "deputy-cm-oath-2024",

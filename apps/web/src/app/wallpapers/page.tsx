@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Download, Search } from "lucide-react";
 import { PageHeading } from "@/components/layout/page-heading";
 import { PageShell } from "@/components/layout/section-background";
+import { FadeIn } from "@/components/motion/fade-in";
 import { PageLoader } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { api, Wallpaper } from "@/lib/api-client";

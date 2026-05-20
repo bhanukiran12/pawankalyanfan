@@ -11,6 +11,7 @@ import { SidebarAd, InContentAd } from "@/components/ads/ad-block";
 import { MovieFilters } from "@/components/movies/movie-filters";
 import { MoviePoster } from "@/components/movies/movie-poster";
 import { PageShell } from "@/components/layout/section-background";
+import { FadeIn } from "@/components/motion/fade-in";
 import { PageLoader } from "@/components/ui/skeleton";
 import { api, Movie } from "@/lib/api-client";
 import { formatDate } from "@/lib/utils";
