@@ -4,6 +4,8 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+RUN apk add --no-cache openssl libc6-compat
+
 COPY package.json package-lock.json turbo.json ./
 COPY packages ./packages
 COPY services ./services
@@ -12,7 +14,6 @@ RUN npm ci
 
 COPY . .
 
-# Prisma generate only (no DB required at build)
 ENV DATABASE_URL="postgresql://build:build@127.0.0.1:5432/build?schema=public"
 ENV DIRECT_URL="postgresql://build:build@127.0.0.1:5432/build?schema=public"
 
@@ -30,6 +31,8 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
+RUN apk add --no-cache openssl libc6-compat
+
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/services ./services
@@ -38,7 +41,6 @@ COPY scripts/start-render-backend.sh ./scripts/start-render-backend.sh
 
 RUN chmod +x ./scripts/start-render-backend.sh
 
-# Render sets PORT; gateway listens on it. Internal services use 4001–4005.
 EXPOSE 4000
 
 CMD ["./scripts/start-render-backend.sh"]

@@ -112,11 +112,20 @@ app.get("/api/admin", authMiddleware, async (req, res) => {
 });
 
 app.get("/", (_req, res) => {
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.PUBLIC_WEB_URL ||
+    process.env.WEB_URL;
+  if (siteUrl) {
+    const target = siteUrl.startsWith("http") ? siteUrl : `https://${siteUrl}`;
+    res.redirect(302, target);
+    return;
+  }
   res.json({
     success: true,
     message: "PawanKalyanFan API gateway",
     health: "/api/health",
-    hint: "Use the pawankalyanfan-web service URL for the fan site.",
+    hint: "Point your custom domain at the pawankalyanfan-web service, not this API service.",
   });
 });
 

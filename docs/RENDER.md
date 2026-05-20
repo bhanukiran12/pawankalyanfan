@@ -26,6 +26,18 @@ This repo ships a [Render Blueprint](https://render.com/docs/blueprint-spec) (`r
 5. On `pawankalyanfan-web`, confirm **`API_GATEWAY_HOST`** is set (from the API service). Optional: set `API_GATEWAY_URL` to `https://<api-host>.onrender.com` if proxy calls fail.
 6. Open the **`pawankalyanfan-web`** URL (not the API URL). The API root (`pawankalyanfan-api`) only serves `/api/*`.
 
+### Custom domain shows JSON (`API gateway`) instead of the website
+
+Your domain must be attached to **`pawankalyanfan-web`**, not **`pawankalyanfan-api`**.
+
+1. Render → **pawankalyanfan-web** → **Settings** → **Custom Domains** → add `pawankalyanfan.com` / `www`.
+2. Remove that domain from **pawankalyanfan-api** if it is listed there.
+3. DNS: CNAME to the **web** service hostname Render shows (not the API hostname).
+
+### Prisma `libssl.so.1.1` crash in API logs
+
+The Docker image installs OpenSSL 3 and Prisma uses `linux-musl-openssl-3.0.x`. Redeploy **pawankalyanfan-api** after pulling the latest `Dockerfile` + `schema.prisma` changes.
+
 ### Browser shows `404` on `(index)` or empty pages
 
 - Open the **web** service URL, not `pawankalyanfan-api`.
