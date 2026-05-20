@@ -13,6 +13,10 @@ This repo ships a [Render Blueprint](https://render.com/docs/blueprint-spec) (`r
 1. Push this repo to GitHub.
 2. [Render Dashboard](https://dashboard.render.com) → **New** → **Blueprint**.
 3. Connect the repository and apply `render.yaml`.
+
+**If you see `open Dockerfile: no such file or directory`:** the service was created without the blueprint paths. Either redeploy from the blueprint, or in each service go to **Settings → Build & Deploy → Dockerfile Path** and set:
+   - API: `Dockerfile` (or `Dockerfile.backend`)
+   - Web: `Dockerfile.web`
 4. After the API service is live, open **Shell** on `pawankalyanfan-api` (or run locally against prod `DATABASE_URL`):
 
    ```bash

@@ -15,7 +15,8 @@ services:
   - type: web
     name: pawankalyanfan-api
     runtime: docker
-    dockerfilePath: ./Dockerfile.backend
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
     plan: starter
     healthCheckPath: /api/health
     releaseCommand: npx prisma db push --schema=packages/database/prisma/schema.prisma --accept-data-loss
@@ -53,6 +54,7 @@ services:
   - type: web
     name: pawankalyanfan-web
     runtime: docker
+    dockerContext: .
     dockerfilePath: ./Dockerfile.web
     plan: starter
     healthCheckPath: /
