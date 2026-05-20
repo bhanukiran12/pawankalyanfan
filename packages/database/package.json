@@ -1,0 +1,30 @@
+{
+  "name": "@pkf/database",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "generate": "dotenv -e ../../.env -- prisma generate --schema=./prisma/schema.prisma",
+    "push": "dotenv -e ../../.env -- prisma db push --schema=./prisma/schema.prisma --accept-data-loss",
+    "migrate": "dotenv -e ../../.env -- prisma migrate dev --schema=./prisma/schema.prisma",
+    "seed": "dotenv -e ../../.env -- npx tsx prisma/seed.ts",
+    "studio": "dotenv -e ../../.env -- prisma studio --schema=./prisma/schema.prisma"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0"
+  },
+  "devDependencies": {
+    "bcryptjs": "^3.0.3",
+    "@types/bcryptjs": "^2.4.6",
+    "dotenv-cli": "^7.4.2",
+    "tsx": "^4.19.0",
+    "prisma": "^5.22.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  }
+}

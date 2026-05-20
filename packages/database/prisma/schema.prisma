@@ -1,0 +1,501 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+enum MembershipStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  PENDING
+}
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum EventType {
+  MOVIE_RELEASE
+  SPEECH
+  POLITICAL
+  PUBLIC_APPEARANCE
+  AWARD
+  OTHER
+}
+
+enum QuoteCategory {
+  MOTIVATIONAL
+  POLITICAL
+  MOVIE_DIALOGUE
+  DEVOTIONAL
+  LEADERSHIP
+}
+
+enum SpeechTag {
+  POLITICAL
+  MOVIE
+  PUBLIC_EVENT
+  INTERVIEW
+  OTHER
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          Role      @default(USER)
+  isPremium     Boolean   @default(false)
+  premiumBadge  Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts          Account[]
+  sessions          Session[]
+  membership        Membership?
+  favoriteQuotes    FavoriteQuote[]
+  favoriteWallpapers FavoriteWallpaper[]
+  forumThreads      ForumThread[]
+  forumReplies      ForumReply[]
+  forumLikes        ForumLike[]
+  fanSubmissions    FanSubmission[]
+  submissionLikes   SubmissionLike[]
+  submissionComments SubmissionComment[]
+  reports           Report[]
+  affiliateClicks   AffiliateClick[]
+  notifications     Notification[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Membership {
+  id                 String           @id @default(cuid())
+  userId             String           @unique
+  status             MembershipStatus @default(PENDING)
+  razorpaySubId      String?
+  razorpayCustomerId String?
+  planAmount         Int              @default(9900)
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  cancelledAt        DateTime?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Movie {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  releaseDate DateTime
+  posterUrl   String?
+  bannerUrl   String?
+  synopsis    String   @db.Text
+  genre       String[]
+  rating      Float    @default(0)
+  trivia      String?  @db.Text
+  trailerUrl  String?
+  published   Boolean  @default(false)
+  featured    Boolean  @default(false)
+  viewCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  cast      MovieCast[]
+  dialogues MovieDialogue[]
+  songs     MovieSong[]
+  gallery   MovieGallery[]
+  events    TimelineEvent[]
+}
+
+model MovieCast {
+  id       String @id @default(cuid())
+  movieId  String
+  name     String
+  role     String
+  imageUrl String?
+
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+}
+
+model MovieDialogue {
+  id      String @id @default(cuid())
+  movieId String
+  text    String @db.Text
+  context String?
+
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+}
+
+model MovieSong {
+  id       String  @id @default(cuid())
+  movieId  String
+  title    String
+  singer   String?
+  videoUrl String?
+
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+}
+
+model MovieGallery {
+  id       String @id @default(cuid())
+  movieId  String
+  imageUrl String
+  caption  String?
+
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+}
+
+model Speech {
+  id          String      @id @default(cuid())
+  title       String
+  slug        String      @unique
+  date        DateTime
+  event       String
+  transcript  String      @db.Text
+  summary     String      @db.Text
+  highlights  String[]
+  videoUrl    String?
+  thumbnailUrl String?
+  tags        SpeechTag[]
+  published   Boolean     @default(false)
+  featured    Boolean     @default(false)
+  viewCount   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  quotes Quote[]
+  events TimelineEvent[]
+}
+
+model Quote {
+  id         String        @id @default(cuid())
+  text       String        @db.Text
+  slug       String        @unique
+  category   QuoteCategory
+  source     String?
+  speechId   String?
+  movieTitle String?
+  imageUrl   String?
+  isPremium  Boolean       @default(false)
+  featured   Boolean       @default(false)
+  shareCount Int           @default(0)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  speech   Speech?         @relation(fields: [speechId], references: [id], onDelete: SetNull)
+  favorites FavoriteQuote[]
+}
+
+model FavoriteQuote {
+  id        String   @id @default(cuid())
+  userId    String
+  quoteId   String
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quote Quote @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, quoteId])
+}
+
+model Wallpaper {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  imageUrl    String
+  thumbnailUrl String?
+  tags        String[]
+  isPremium   Boolean  @default(false)
+  downloadCount Int    @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  favorites FavoriteWallpaper[]
+}
+
+model FavoriteWallpaper {
+  id          String   @id @default(cuid())
+  userId      String
+  wallpaperId String
+  createdAt   DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wallpaper Wallpaper @relation(fields: [wallpaperId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, wallpaperId])
+}
+
+model FanSubmission {
+  id          String           @id @default(cuid())
+  userId      String
+  title       String
+  description String?          @db.Text
+  mediaUrl    String
+  mediaType   String           @default("image")
+  status      SubmissionStatus @default(PENDING)
+  likeCount   Int              @default(0)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  user     User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes    SubmissionLike[]
+  comments SubmissionComment[]
+}
+
+model SubmissionLike {
+  id           String   @id @default(cuid())
+  userId       String
+  submissionId String
+  createdAt    DateTime @default(now())
+
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  submission FanSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, submissionId])
+}
+
+model SubmissionComment {
+  id           String   @id @default(cuid())
+  userId       String
+  submissionId String
+  content      String   @db.Text
+  createdAt    DateTime @default(now())
+
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  submission FanSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+}
+
+model NewsPost {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String
+  content     String   @db.Text
+  coverImage  String?
+  category    String
+  tags        String[]
+  published   Boolean  @default(false)
+  featured    Boolean  @default(false)
+  trending    Boolean  @default(false)
+  viewCount   Int      @default(0)
+  authorName  String   @default("Editorial Team")
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TimelineEvent {
+  id          String    @id @default(cuid())
+  title       String
+  description String    @db.Text
+  date        DateTime
+  type        EventType
+  imageUrl    String?
+  movieId     String?
+  speechId    String?
+  featured    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+
+  movie  Movie?  @relation(fields: [movieId], references: [id], onDelete: SetNull)
+  speech Speech? @relation(fields: [speechId], references: [id], onDelete: SetNull)
+}
+
+model ForumCategory {
+  id          String @id @default(cuid())
+  name        String
+  slug        String @unique
+  description String?
+  icon        String?
+  sortOrder   Int    @default(0)
+
+  threads ForumThread[]
+}
+
+model ForumThread {
+  id         String   @id @default(cuid())
+  title      String
+  slug       String   @unique
+  content    String   @db.Text
+  categoryId String
+  userId     String
+  isPinned   Boolean  @default(false)
+  isLocked   Boolean  @default(false)
+  viewCount  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  category ForumCategory @relation(fields: [categoryId], references: [id])
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  replies  ForumReply[]
+  likes    ForumLike[]
+  reports  Report[]
+}
+
+model ForumReply {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  threadId  String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  thread ForumThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ForumLike {
+  id        String   @id @default(cuid())
+  userId    String
+  threadId  String
+  createdAt DateTime @default(now())
+
+  user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  thread ForumThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, threadId])
+}
+
+model Report {
+  id        String   @id @default(cuid())
+  reason    String
+  threadId  String?
+  userId    String
+  resolved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  thread ForumThread? @relation(fields: [threadId], references: [id], onDelete: SetNull)
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AffiliateProduct {
+  id           String   @id @default(cuid())
+  title        String
+  description  String?  @db.Text
+  imageUrl     String?
+  affiliateUrl String
+  category     String
+  commission   Float    @default(0)
+  clickCount   Int      @default(0)
+  conversions  Int      @default(0)
+  active       Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  clicks AffiliateClick[]
+}
+
+model AffiliateClick {
+  id        String   @id @default(cuid())
+  productId String
+  userId    String?
+  ipAddress String?
+  userAgent String?
+  converted Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  product AffiliateProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user    User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model AdPlacement {
+  id        String  @id @default(cuid())
+  name      String  @unique
+  slot      String
+  enabled   Boolean @default(true)
+  adCode    String? @db.Text
+  sortOrder Int     @default(0)
+}
+
+model SiteSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String @db.Text
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  type      String   @default("info")
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  event     String
+  path      String?
+  userId    String?
+  metadata  String?  @db.Text
+  createdAt DateTime @default(now())
+}
+
+model AiPrompt {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  system    String   @db.Text
+  active    Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+}
