@@ -35,8 +35,16 @@ RUN npm ci --workspace=@pkf/web --include-workspace-root
 
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NEXT_PUBLIC_API_URL=/api
+# Render injects service env at build time; mirror public key into Next bundle when set.
+ARG VAPID_PUBLIC_KEY
+ARG NEXT_PUBLIC_VAPID_PUBLIC_KEY
+ENV VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
+ENV NEXT_PUBLIC_VAPID_PUBLIC_KEY=${NEXT_PUBLIC_VAPID_PUBLIC_KEY}
 
-RUN npm run build --workspace=@pkf/web
+RUN if [ -n "$VAPID_PUBLIC_KEY" ] && [ -z "$NEXT_PUBLIC_VAPID_PUBLIC_KEY" ]; then \
+      export NEXT_PUBLIC_VAPID_PUBLIC_KEY="$VAPID_PUBLIC_KEY"; \
+    fi && \
+    npm run build --workspace=@pkf/web
 
 FROM node:20-alpine AS runner
 WORKDIR /app

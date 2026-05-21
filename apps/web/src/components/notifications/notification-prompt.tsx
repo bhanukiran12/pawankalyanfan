@@ -54,7 +54,10 @@ export function NotificationPrompt() {
         return;
       }
       if (result.reason === "no-vapid") {
-        toast.error("Push alerts are not configured on the server yet.");
+        toast.error(
+          "Push alerts are not configured yet. Add VAPID keys in Render → Environment, then redeploy.",
+          { duration: 6000 },
+        );
         return;
       }
       toast.error("Could not enable notifications. Try again later.");

@@ -46,10 +46,28 @@ export type SubscribeResult =
   | { ok: true }
   | { ok: false; reason: "unsupported" | "denied" | "no-vapid" | "subscribe-failed" };
 
+async function fetchVapidPublicKey(): Promise<string | null> {
+  if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY?.trim()) {
+    return process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY.trim();
+  }
+  try {
+    const res = await fetch("/api/push/vapid-public-key", { cache: "no-store" });
+    const json = await res.json();
+    if (res.ok && json.success && json.data?.publicKey) {
+      return String(json.data.publicKey);
+    }
+  } catch {
+    /* try gateway client */
+  }
+  try {
+    return (await api.getPushPublicKey())?.publicKey ?? null;
+  } catch {
+    return null;
+  }
+}
+
 async function completePushSubscribe(): Promise<SubscribeResult> {
-  const publicKey =
-    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ||
-    (await api.getPushPublicKey().catch(() => null))?.publicKey;
+  const publicKey = await fetchVapidPublicKey();
 
   if (!publicKey) return { ok: false, reason: "no-vapid" };
 
