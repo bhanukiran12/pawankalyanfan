@@ -41,18 +41,30 @@ class ApiClient {
   }
 
   private async request<T>(path: string, options: FetchOptions = {}): Promise<T> {
-    const res = await fetch(`${this.baseUrl}${path}`, {
-      ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...options.headers,
-      },
-    });
+    const url = `${this.baseUrl}${path}`;
+    let res: Response;
+    try {
+      res = await fetch(url, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...options.headers,
+        },
+      });
+    } catch {
+      throw new Error(
+        "Cannot reach the API. For local dev run: npm run dev:local (or npm run dev:services and npm run dev:gateway in another terminal, plus npm run dev:web).",
+      );
+    }
 
     const json = await res.json();
 
     if (!res.ok || !json.success) {
-      throw new Error(json.error || `Request failed: ${res.status}`);
+      const hint =
+        res.status === 503 && String(json.error || "").includes("gateway")
+          ? " Start the API gateway: npm run dev:gateway"
+          : "";
+      throw new Error((json.error || `Request failed: ${res.status}`) + hint);
     }
 
     return json.data as T;
@@ -76,6 +88,30 @@ class ApiClient {
     return this.request<{ quotes: Quote[]; total: number }>(`/quotes${qs}`);
   }
 
+  getFanEdits(params?: Record<string, string>) {
+    const qs = params ? "?" + new URLSearchParams(params).toString() : "";
+    return this.request<{ submissions: FanSubmission[]; total: number }>(`/fan-edits${qs}`);
+  }
+
+  getJanasenaNews() {
+    return this.request<{ articles: JanasenaArticle[]; source: string }>("/janasena-news");
+  }
+
+  getJanasenaArticle(id: string) {
+    return this.request<JanasenaArticle>(`/janasena-news/${id}`);
+  }
+
+  getPushPublicKey() {
+    return this.request<{ publicKey: string }>("/push/vapid-public-key");
+  }
+
+  subscribePush(subscription: PushSubscriptionBody) {
+    return this.request<{ subscribed: boolean }>("/push/subscribe", {
+      method: "POST",
+      body: JSON.stringify(subscription),
+    });
+  }
+
   getNews(params?: Record<string, string>) {
     const qs = params ? "?" + new URLSearchParams(params).toString() : "";
     return this.request<{ posts: NewsPost[]; total: number }>(`/news${qs}`);
@@ -92,8 +128,9 @@ class ApiClient {
     );
   }
 
-  getEvents() {
-    return this.request<TimelineEvent[]>("/events");
+  getEvents(params?: Record<string, string>) {
+    const qs = params ? "?" + new URLSearchParams(params).toString() : "";
+    return this.request<TimelineEvent[]>(`/events${qs}`);
   }
 
   getAdSlot(slot: string) {
@@ -137,7 +174,39 @@ export interface Quote {
   slug: string;
   category: string;
   source?: string | null;
+  movieTitle?: string | null;
+  movieSlug?: string | null;
+  speechSlug?: string | null;
   featured: boolean;
+}
+
+export interface JanasenaArticle {
+  id: string;
+  title: string;
+  excerpt: string;
+  contentHtml: string;
+  imageUrl: string | null;
+  videoUrl: string | null;
+  publishedAt: string;
+  breaking: boolean;
+  sourceUrl: string;
+  siteUrl: string;
+}
+
+export interface PushSubscriptionBody {
+  endpoint: string;
+  keys: { p256dh: string; auth: string };
+}
+
+export interface FanSubmission {
+  id: string;
+  title: string;
+  description?: string | null;
+  mediaUrl: string;
+  mediaType: string;
+  likeCount?: number;
+  user?: { name: string | null };
+  _count?: { likes: number };
 }
 
 export interface NewsPost {

@@ -8,8 +8,19 @@ import {
   SERVICE_PORTS,
 } from "@pkf/shared";
 import { prisma } from "@pkf/database";
+import { fetchJanasenaArticle } from "./janasena-news";
+import { getJanasenaFeed, syncJanasenaNews, scheduleJanasenaPolling } from "./janasena-sync";
+import {
+  configureWebPush,
+  getVapidPublicKey,
+  isPushAvailable,
+  savePushSubscription,
+  removePushSubscription,
+  type PushSubscriptionPayload,
+} from "./push";
 
 const app = createServiceApp("content-service");
+configureWebPush();
 
 // ─── Movies ───────────────────────────────────────────────
 app.get("/movies", asyncHandler(async (req, res) => {
@@ -68,17 +79,37 @@ app.get("/quotes", asyncHandler(async (req, res) => {
   const pageNum = parseInt(page as string);
   const limitNum = parseInt(limit as string);
 
-  const [quotes, total] = await Promise.all([
+  const [quotes, total, movies] = await Promise.all([
     prisma.quote.findMany({
       where,
       orderBy: [{ featured: "desc" }, { createdAt: "desc" }],
       skip: (pageNum - 1) * limitNum,
       take: limitNum,
+      include: {
+        speech: { select: { slug: true, title: true } },
+      },
     }),
     prisma.quote.count({ where }),
+    prisma.movie.findMany({ select: { title: true, slug: true }, where: { published: true } }),
   ]);
 
-  success(res, { quotes, total, page: pageNum });
+  const movieSlugByTitle = new Map(
+    movies.map((m) => [m.title.toLowerCase(), m.slug]),
+  );
+
+  const enriched = quotes.map((q) => {
+    const { speech, ...rest } = q;
+    const movieSlug = q.movieTitle
+      ? movieSlugByTitle.get(q.movieTitle.toLowerCase()) ?? null
+      : null;
+    return {
+      ...rest,
+      movieSlug,
+      speechSlug: speech?.slug ?? null,
+    };
+  });
+
+  success(res, { quotes: enriched, total, page: pageNum });
 }));
 
 // ─── News ─────────────────────────────────────────────────
@@ -181,6 +212,41 @@ app.get("/home", asyncHandler(async (_req, res) => {
   success(res, { movies, quotes, news, wallpapers, events, submissions });
 }));
 
+// ─── Jana Sena newsletter (janasenanewsletter.com) ────────
+app.get("/janasena-news", asyncHandler(async (_req, res) => {
+  await syncJanasenaNews().catch(() => undefined);
+  const articles = await getJanasenaFeed();
+  success(res, { articles, source: "https://janasenanewsletter.com/news" });
+}));
+
+app.get("/janasena-news/:id", asyncHandler(async (req, res) => {
+  const article = await fetchJanasenaArticle(req.params.id);
+  if (!article) return error(res, "Article not found", 404);
+  success(res, article);
+}));
+
+// ─── Web push (browser notifications) ─────────────────────
+app.get("/push/vapid-public-key", asyncHandler(async (_req, res) => {
+  if (!isPushAvailable()) return error(res, "Push notifications are not configured", 503);
+  success(res, { publicKey: getVapidPublicKey() });
+}));
+
+app.post("/push/subscribe", asyncHandler(async (req, res) => {
+  const sub = req.body as PushSubscriptionPayload;
+  if (!sub?.endpoint || !sub?.keys?.p256dh || !sub?.keys?.auth) {
+    return error(res, "Invalid subscription");
+  }
+  if (!isPushAvailable()) return error(res, "Push notifications are not configured", 503);
+  await savePushSubscription(sub);
+  success(res, { subscribed: true });
+}));
+
+app.post("/push/unsubscribe", asyncHandler(async (req, res) => {
+  const { endpoint } = req.body as { endpoint?: string };
+  if (endpoint) await removePushSubscription(endpoint);
+  success(res, { unsubscribed: true });
+}));
+
 // ─── Admin content CRUD ───────────────────────────────────
 app.post("/admin/movies", authMiddleware, requireAdmin, asyncHandler(async (req, res) => {
   const movie = await prisma.movie.create({ data: req.body });
@@ -207,6 +273,9 @@ app.get("/admin/stats", authMiddleware, requireAdmin, asyncHandler(async (_req, 
 }));
 
 const PORT = process.env.PORT || SERVICE_PORTS.CONTENT;
-app.listen(PORT, () => console.log(`🎬 Content Service running on :${PORT}`));
+app.listen(PORT, () => {
+  console.log(`🎬 Content Service running on :${PORT}`);
+  scheduleJanasenaPolling();
+});
 
 export default app;

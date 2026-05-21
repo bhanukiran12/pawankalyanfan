@@ -69,16 +69,30 @@ npm run build --workspace=@pkf/shared
 npm run dev
 ```
 
-### Development (individual services)
+### Development (local)
+
+**Easiest — one command** (services + gateway + Next.js):
 
 ```bash
-# Terminal 1 — All backend services + gateway
+npm run dev:local
+```
+
+Open http://localhost:3000
+
+**Or separate terminals:**
+
+```bash
+# Terminal 1 — microservices
 npm run dev:services
+
+# Terminal 2 — API gateway (required — browser calls go through :4000)
 npm run dev:gateway
 
-# Terminal 2 — Frontend
+# Terminal 3 — frontend
 npm run dev:web
 ```
+
+In `.env`, use `NEXT_PUBLIC_API_URL="/api"` and `API_GATEWAY_URL="http://localhost:4000"` (see `.env.example`).
 
 ### Docker
 

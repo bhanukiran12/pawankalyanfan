@@ -335,4 +335,18 @@
   .scrollbar-vertical::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, #dc2626, #ef4444);
   }
+
+  .janasena-article p {
+    margin-bottom: 1rem;
+  }
+
+  .janasena-article img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+  }
+
+  .janasena-article strong {
+    color: hsl(var(--brand-red, 0 84% 50%));
+  }
 }

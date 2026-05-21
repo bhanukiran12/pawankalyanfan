@@ -1,4 +1,5 @@
-# Next.js frontend (standalone) for Render
+# Web-only image (optional split deploy). For one Render service use root Dockerfile instead.
+# Next.js frontend (standalone)
 FROM node:20-alpine AS builder
 WORKDIR /app
 

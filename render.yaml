@@ -50,6 +50,14 @@ services:
           type: web
           name: pawankalyanfan
           property: host
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_SUBJECT
+        value: mailto:admin@pawankalyanfan.com
+      - key: NEXT_PUBLIC_VAPID_PUBLIC_KEY
+        sync: false
       - key: OPENROUTER_API_KEY
         sync: false
       - key: RAZORPAY_KEY_ID

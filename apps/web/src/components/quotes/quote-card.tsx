@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { QUOTE_CATEGORIES } from "@/lib/constants";
+import type { Quote } from "@/lib/api-client";
 import {
   categoryLabel,
   copyQuoteText,
@@ -15,14 +16,6 @@ import {
   shareWhatsApp,
   type PosterFormat,
 } from "@/lib/quote-poster";
-
-type Quote = {
-  id: string;
-  text: string;
-  slug: string;
-  category: string;
-  source?: string | null;
-};
 
 export function QuoteCard({ quote }: { quote: Quote }) {
   const [copied, setCopied] = useState(false);
@@ -98,7 +91,7 @@ export function QuoteCard({ quote }: { quote: Quote }) {
         </div>
 
         {previewUrl && previewFormat && (
-          <div className="px-4 pb-2">
+          <div className="hidden sm:block px-4 pb-2">
             <div
               className={`mx-auto overflow-hidden rounded-lg border border-brand-red/20 bg-black ${
                 previewFormat === "status" ? "max-w-[140px]" : "max-w-[180px]"
@@ -125,7 +118,7 @@ export function QuoteCard({ quote }: { quote: Quote }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <Button
               size="sm"
-              className="bg-[#25D366] hover:bg-[#20bd5a] text-white col-span-1 sm:col-span-2 min-h-[44px]"
+              className="hidden sm:inline-flex bg-[#25D366] hover:bg-[#20bd5a] text-white col-span-1 sm:col-span-2 min-h-[44px]"
               disabled={sharing}
               onClick={handleWhatsAppShare}
             >
@@ -135,7 +128,7 @@ export function QuoteCard({ quote }: { quote: Quote }) {
             <Button
               size="sm"
               variant="default"
-              className="min-h-[44px]"
+              className="hidden sm:inline-flex min-h-[44px]"
               disabled={downloading === "status"}
               onClick={() => handleDownload("status")}
             >
@@ -145,16 +138,22 @@ export function QuoteCard({ quote }: { quote: Quote }) {
             <Button
               size="sm"
               variant="secondary"
+              className="hidden sm:inline-flex"
               disabled={downloading === "square"}
               onClick={() => handleDownload("square")}
             >
               <Download className="h-4 w-4 mr-1" />
               {downloading === "square" ? "Saving…" : "Download"}
             </Button>
-            <Button size="sm" variant="outline" onClick={() => handlePreview("status")}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="hidden sm:inline-flex"
+              onClick={() => handlePreview("status")}
+            >
               Preview
             </Button>
-            <Button size="sm" variant="ghost" onClick={handleCopy}>
+            <Button size="sm" variant="ghost" className="min-h-[44px] w-full sm:w-auto" onClick={handleCopy}>
               <Copy className="h-4 w-4 mr-1" />
               {copied ? "Copied" : "Copy"}
             </Button>

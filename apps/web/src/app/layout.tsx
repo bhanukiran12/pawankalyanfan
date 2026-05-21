@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { AppProviders } from "@/components/app-providers";
 import { MobileStickyAd } from "@/components/ads/ad-block";
 import { MicrosoftClarity } from "@/components/analytics/microsoft-clarity";
+import { NotificationPrompt } from "@/components/notifications/notification-prompt";
 import { generateSEO } from "@/lib/seo";
 import "./globals.css";
 
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </main>
           <SiteFooter />
           <MobileStickyAd />
+          <NotificationPrompt />
         </AppProviders>
         <MicrosoftClarity />
       </body>

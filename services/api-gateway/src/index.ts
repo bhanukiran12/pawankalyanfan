@@ -60,6 +60,8 @@ app.use("/api/news", createProxyMiddleware(mountedProxy(SERVICE_URLS.CONTENT, "/
 app.use("/api/wallpapers", createProxyMiddleware(mountedProxy(SERVICE_URLS.CONTENT, "/wallpapers")));
 app.use("/api/events", createProxyMiddleware(mountedProxy(SERVICE_URLS.CONTENT, "/events")));
 app.use("/api/home", createProxyMiddleware(mountedProxy(SERVICE_URLS.CONTENT, "/home")));
+app.use("/api/janasena-news", createProxyMiddleware(mountedProxy(SERVICE_URLS.CONTENT, "/janasena-news")));
+app.use("/api/push", createProxyMiddleware(mountedProxy(SERVICE_URLS.CONTENT, "/push")));
 
 // ─── Community Service ────────────────────────────────────
 app.use("/api/forum", createProxyMiddleware(mountedProxy(SERVICE_URLS.COMMUNITY, "/forum")));

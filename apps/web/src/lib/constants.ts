@@ -21,6 +21,7 @@ export const SITE = {
 
 export const NAV_LINKS = [
   { href: "/movies", label: "Movies" },
+  { href: "/janasena-news", label: "Jana Sena News" },
   { href: "/quotes", label: "Quotes" },
   { href: "/wallpapers", label: "Wallpapers" },
   { href: "/blogs", label: "Blogs" },
