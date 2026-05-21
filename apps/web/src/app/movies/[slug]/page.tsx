@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ExternalLink, MessageCircleQuote, Music2, Star, Users } from "lucide-react";
+import { ArrowLeft, ExternalLink, Music2, Quote, Star, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MoviePoster, posterSrc } from "@/components/movies/movie-poster";
@@ -117,7 +117,7 @@ export default function MovieDetailPage({ params }: { params: { slug: string } }
               <section>
                 <div className="flex items-center justify-between gap-3 mb-4">
                   <h2 className="font-display text-2xl tracking-wide flex items-center gap-2">
-                    <MessageCircleQuote className="h-6 w-6 text-brand-red" />
+                    <Quote className="h-6 w-6 text-brand-red" />
                     Famous dialogues
                   </h2>
                   <Link href="/quotes?category=MOVIE_DIALOGUE" className="text-xs text-brand-red hover:underline shrink-0">

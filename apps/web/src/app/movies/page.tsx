@@ -18,8 +18,6 @@ function MoviesContent() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const hasFilters = Boolean(params.get("q") || params.get("genre") || params.get("year"));
-
   useEffect(() => {
     const query: Record<string, string> = { limit: "50" };
     ["q", "genre", "year", "featured"].forEach((k) => {
