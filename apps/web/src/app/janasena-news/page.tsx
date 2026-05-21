@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ExternalLink, Bell } from "lucide-react";
+import { toast } from "sonner";
 import { api, JanasenaArticle } from "@/lib/api-client";
 import { PageHeading } from "@/components/layout/page-heading";
 import { PageShell } from "@/components/layout/section-background";
@@ -33,7 +34,12 @@ export default function JanasenaNewsPage() {
   async function enableAlerts() {
     setEnabling(true);
     try {
-      await subscribeToPushNotifications();
+      const result = await subscribeToPushNotifications();
+      if (result.ok) {
+        toast.success("Notifications enabled!");
+      } else if (result.reason === "denied") {
+        toast.message("Notifications blocked in browser settings.");
+      }
     } finally {
       setEnabling(false);
     }

@@ -1,5 +1,7 @@
 import { api } from "@/lib/api-client";
 
+const SW_PATH = "/sw.js";
+
 function encodeSubscriptionKey(key: ArrayBuffer | null): string {
   if (!key) return "";
   const bytes = new Uint8Array(key);
@@ -28,50 +30,71 @@ export function pushSupported(): boolean {
   );
 }
 
-export async function subscribeToPushNotifications(): Promise<boolean> {
-  if (!pushSupported()) return false;
+/** Register service worker early so subscribe is ready when the user allows notifications. */
+export function registerPushServiceWorker(): void {
+  if (!pushSupported()) return;
+  navigator.serviceWorker.register(SW_PATH).catch(() => undefined);
+}
 
-  const permission = await Notification.requestPermission();
-  if (permission !== "granted") return false;
+/** Triggers the native browser permission dialog (requires user gesture). */
+export async function requestNotificationPermission(): Promise<NotificationPermission> {
+  if (!pushSupported()) return "denied";
+  return Notification.requestPermission();
+}
 
+export type SubscribeResult =
+  | { ok: true }
+  | { ok: false; reason: "unsupported" | "denied" | "no-vapid" | "subscribe-failed" };
+
+async function completePushSubscribe(): Promise<SubscribeResult> {
   const publicKey =
     process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ||
     (await api.getPushPublicKey().catch(() => null))?.publicKey;
 
-  if (!publicKey) return false;
+  if (!publicKey) return { ok: false, reason: "no-vapid" };
 
-  const registration = await navigator.serviceWorker.register("/sw.js");
-  await navigator.serviceWorker.ready;
+  try {
+    const registration = await navigator.serviceWorker.register(SW_PATH);
+    await navigator.serviceWorker.ready;
 
-  const existing = await registration.pushManager.getSubscription();
-  if (existing) {
+    const existing = await registration.pushManager.getSubscription();
+    const sub =
+      existing ??
+      (await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicKey),
+      }));
+
+    const p256dh = sub.getKey("p256dh");
+    const auth = sub.getKey("auth");
+    if (!p256dh || !auth) return { ok: false, reason: "subscribe-failed" };
+
     await api.subscribePush({
-      endpoint: existing.endpoint,
+      endpoint: sub.endpoint,
       keys: {
-        p256dh: encodeSubscriptionKey(existing.getKey("p256dh")),
-        auth: encodeSubscriptionKey(existing.getKey("auth")),
+        p256dh: encodeSubscriptionKey(p256dh),
+        auth: encodeSubscriptionKey(auth),
       },
     });
-    return true;
+
+    localStorage.setItem("push_subscribed", "1");
+    return { ok: true };
+  } catch {
+    return { ok: false, reason: "subscribe-failed" };
   }
+}
 
-  const sub = await registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(publicKey),
-  });
+/** Sync server when permission was already granted (no new browser prompt). */
+export async function syncPushSubscriptionIfGranted(): Promise<void> {
+  if (!pushSupported() || Notification.permission !== "granted") return;
+  await completePushSubscribe();
+}
 
-  const p256dh = sub.getKey("p256dh");
-  const auth = sub.getKey("auth");
-  if (!p256dh || !auth) return false;
+export async function subscribeToPushNotifications(): Promise<SubscribeResult> {
+  if (!pushSupported()) return { ok: false, reason: "unsupported" };
 
-  await api.subscribePush({
-    endpoint: sub.endpoint,
-    keys: {
-      p256dh: encodeSubscriptionKey(p256dh),
-      auth: encodeSubscriptionKey(auth),
-    },
-  });
+  const permission = await requestNotificationPermission();
+  if (permission !== "granted") return { ok: false, reason: "denied" };
 
-  localStorage.setItem("push_subscribed", "1");
-  return true;
+  return completePushSubscribe();
 }
