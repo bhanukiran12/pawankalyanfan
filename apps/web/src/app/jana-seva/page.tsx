@@ -59,11 +59,11 @@ export default function JanaSevaPage() {
         <FadeIn>
           <Badge className="bg-brand-red text-white border-0 mb-4">
             <Shield className="h-3 w-3 mr-1 inline" />
-            Trust · Transparency · Community
+            Unofficial fan volunteer service
           </Badge>
           <PageHeading
             title="Jana Seva"
-            subtitle="A verified community-help platform — coordinate blood, education, volunteers, and emergencies. This is not a donation scam site."
+            subtitle="Fan-made community coordination — connect volunteers with people who need blood, education, or emergency help. We never ask for donations or money on this site."
           />
         </FadeIn>
 
@@ -121,8 +121,10 @@ export default function JanaSevaPage() {
           })}
         </div>
 
-        <p className="mt-10 text-xs text-white/45 max-w-2xl">
+        <p className="mt-10 text-xs text-white/45 max-w-3xl leading-relaxed">
           Posting requires email OTP verification. Contact numbers are shown on listings. Report abuse on any post.
+          PawanKalyanFan is not affiliated with Pawan Kalyan or Jana Sena Party. Do not pay anyone claiming to collect
+          donations for this website.
         </p>
       </div>
     </PageShell>

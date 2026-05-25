@@ -17,7 +17,7 @@ export function SenaniStudentsCta({ compact }: Props) {
           <div>
             <p className="font-display text-lg tracking-wide">Senani Students Wing</p>
             <p className="text-xs text-muted-foreground mt-1">
-              Join the official student registration — leadership, welfare & change.
+              Link to the wing&apos;s external registration form — not hosted on this fan site.
             </p>
           </div>
         </div>
@@ -43,8 +43,8 @@ export function SenaniStudentsCta({ compact }: Props) {
           <p className="text-xs uppercase tracking-wider text-brand-red mb-1">Jana Sena · Students</p>
           <h2 className="font-display text-2xl sm:text-3xl tracking-wide">Senani Students Wing</h2>
           <p className="mt-2 text-sm text-white/75 max-w-xl">
-            Students&apos; power is the state&apos;s future. Register through the official survey and
-            join programs for leadership, welfare, and social change.
+            Fan link to the Senani Students Wing registration survey on their external website — not the
+            official wing site hosted here.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link href="/janasena-students">

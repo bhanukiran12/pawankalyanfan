@@ -15,6 +15,7 @@ import { PageShell } from "@/components/layout/section-background";
 import { FadeIn } from "@/components/motion/fade-in";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { FanDisclaimerNotice } from "@/components/layout/fan-disclaimer-notice";
 import { SENANI_STUDENTS_WING, SITE } from "@/lib/constants";
 
 const PROGRAMS = [
@@ -54,12 +55,17 @@ export default function JanasenaStudentsPage() {
         <FadeIn>
           <PageHeading
             title="Senani Students Wing"
-            subtitle="Our goal, our responsibility — a journey for students, for society, for change. Register through the official student-wing survey."
+            subtitle="Fan page with a link to the wing’s registration survey — not the official wing website. You complete the form on their external site."
           />
           <div className="mt-4 flex flex-wrap gap-2">
             <Badge>Jana Sena · Students</Badge>
-            <Badge variant="outline">External registration</Badge>
+            <Badge variant="outline">External form only</Badge>
+            <Badge variant="outline">Unofficial fan site</Badge>
           </div>
+        </FadeIn>
+
+        <FadeIn className="mt-6">
+          <FanDisclaimerNotice variant="students-wing" />
         </FadeIn>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] items-start">
@@ -72,8 +78,9 @@ export default function JanasenaStudentsPage() {
                 className="w-full h-auto"
               />
             </div>
-            <p className="mt-3 text-xs text-muted-foreground text-center sm:text-left">
-              Flyer courtesy of {SENANI_STUDENTS_WING.name}. {SITE.disclaimer}
+            <p className="mt-3 text-xs text-muted-foreground text-center sm:text-left leading-relaxed">
+              Flyer image shared for information only. Registration and data collection happen on the
+              wing&apos;s external site, not on {SITE.name}. {SITE.disclaimer}
             </p>
           </FadeIn>
 
@@ -84,8 +91,9 @@ export default function JanasenaStudentsPage() {
                   Register now
                 </h2>
                 <p className="mt-2 text-sm text-white/80 leading-relaxed">
-                  Tap below to open the official registration survey. You will complete the form on
-                  the Senani Students Wing website — it opens in a new tab.
+                  Tap below to open the Senani Students Wing registration survey on their own website
+                  (not on PawanKalyanFan). It opens in a new tab. We do not run that form and do not
+                  collect donations on this fan site.
                 </p>
                 <a
                   href={formUrl}

@@ -53,7 +53,7 @@ export function SiteFooter() {
 
         <div className="mt-12 border-t border-white/10 pt-8">
           <p className="text-center text-xs text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            {SITE.disclaimer}
+            {SITE.disclaimer} Jana Seva is a fan volunteer board only — we do not accept donations or payments on this site.
           </p>
           <p className="mt-4 text-center text-xs text-muted-foreground">
             © {new Date().getFullYear()} {SITE.name}. All rights reserved.

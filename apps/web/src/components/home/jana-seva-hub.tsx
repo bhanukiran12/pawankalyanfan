@@ -43,14 +43,14 @@ export function JanaSevaHub() {
               <Heart className="h-3 w-3 mr-1 inline" />
               Jana Seva
             </Badge>
-            <span className="text-sm text-white/50">Verified community help — not a donation scam</span>
+            <span className="text-sm text-white/50">Unofficial fan volunteer service · no donations on this site</span>
           </div>
           <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-white tracking-wide">
             Help Someone <span className="text-brand-red">Today</span>
           </h2>
           <p className="mt-3 max-w-2xl text-white/70 text-sm sm:text-base">
-            Blood requests, donation camps, free workshops, scholarships, volunteers, and moderated emergency
-            support — coordinated with trust and transparency.
+            Fan-made Jana Seva: blood requests, blood camps, free workshops, scholarships, and volunteer
+            coordination. We never collect money or donations on PawanKalyanFan.
           </p>
         </FadeIn>
 

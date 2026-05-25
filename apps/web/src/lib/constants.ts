@@ -14,17 +14,42 @@ export const SITE = {
   seoDescription:
     "Pawan Kalyan fan website — Power Star movies, iconic dialogues, Jana Sena party politics & speeches, HD UHD 4K wallpapers, blogs, events, quotes, Telugu cinema filmography, Gabbar Singh, Bheemla Nayak, Vakeel Saab, and a personal PK fan tribute.",
   disclaimer:
-    "This website is an unofficial fan-created tribute and is not affiliated with or endorsed by Pawan Kalyan or any official organization.",
+    "This website is an unofficial fan-created tribute and is not affiliated with or endorsed by Pawan Kalyan, Jana Sena Party, or any official organization.",
   contactEmail: "admin@pawankalyanfan.com",
   locale: "en_IN",
 } as const;
 
-/** Senani Students Wing — external registration (official wing form). */
+/** Shown on Jana Seva pages — fan volunteer coordination, no donations. */
+export const JANA_SEVA_LEGAL = {
+  badge: "Unofficial · Fan-made volunteer service",
+  title: "Not an official Jana Sena or government program",
+  summary:
+    "Jana Seva on PawanKalyanFan is a fan-built community board so volunteers can connect with people who need help (blood, emergencies, education, etc.).",
+  noDonations:
+    "We do not accept donations, UPI payments, bank transfers, or any money on this website. Never send money to anyone claiming to represent this site.",
+  notOfficial:
+    "This is not run by Pawan Kalyan, Jana Sena Party, any political office, or a registered NGO. Listings are posted by community members after email verification.",
+  verify:
+    "Always verify hospital, camp, or emergency details yourself before visiting or sharing personal information. Report suspicious posts on the listing.",
+} as const;
+
+/** Senani Students Wing — link only; registration is on the wing’s own site. */
 export const SENANI_STUDENTS_WING = {
   name: "Senani Students Wing",
   registrationUrl: "https://senanistudentswing.rf.gd/forms/survey.php?i=1",
   websiteUrl: "https://senanistudentswing.rf.gd",
   flyerImage: "/janasena/senani-students-wing-flyer.png",
+} as const;
+
+export const STUDENTS_WING_LEGAL = {
+  badge: "External registration · Not pawankalyanfan.com",
+  title: "This page is only a fan link to the wing’s form",
+  summary:
+    "PawanKalyanFan does not host the Senani Students Wing registration. When you tap “Open registration form”, you leave our site and go to the wing’s own website.",
+  notOurForm:
+    "The survey and data you submit on that external link are not stored or controlled by PawanKalyanFan unless stated on that third-party site.",
+  unofficial:
+    "PawanKalyanFan is an unofficial fan site. We are not the official Senani Students Wing website — we share the public registration link for convenience only.",
 } as const;
 
 /** Top header + mobile menu (PK Birthday is footer-only). */
