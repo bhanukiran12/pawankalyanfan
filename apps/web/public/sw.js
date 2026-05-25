@@ -9,7 +9,7 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title, {
       body: data.body,
-      icon: "https://res.cloudinary.com/df7wnybwg/image/upload/v1779281316/pawankalaynfan/movies/pawan_kalayn_fan_logo_tuzxjy.png",
+      icon: "/pk-fan-logo.png",
       tag: data.tag || "janasena-news",
       data: { url: data.url },
     }),

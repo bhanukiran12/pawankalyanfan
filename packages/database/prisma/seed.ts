@@ -15,6 +15,7 @@ import {
   charityScholarships,
   charityVolunteers,
   charityEmergencies,
+  charitySuccessStories,
 } from "./data/charity-seed";
 import type { User } from "@prisma/client";
 
@@ -429,6 +430,9 @@ async function main() {
   }
   for (const row of charityEmergencies) {
     await prisma.emergencyPost.upsert({ where: { slug: row.slug }, update: row, create: row });
+  }
+  for (const row of charitySuccessStories) {
+    await prisma.janaSevaSuccessStory.upsert({ where: { slug: row.slug }, update: row, create: row });
   }
   console.log("✅ Jana Seva sample listings seeded");
 

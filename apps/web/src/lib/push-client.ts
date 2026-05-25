@@ -1,4 +1,5 @@
 import { api } from "@/lib/api-client";
+import { JANA_SEVA_SESSION_KEY } from "@/lib/jana-seva";
 
 const SW_PATH = "/sw.js";
 
@@ -115,4 +116,54 @@ export async function subscribeToPushNotifications(): Promise<SubscribeResult> {
   if (permission !== "granted") return { ok: false, reason: "denied" };
 
   return completePushSubscribe();
+}
+
+/** Browser alerts for Jana Seva volunteers when new help is posted */
+export async function subscribeJanaSevaVolunteerPush(): Promise<SubscribeResult> {
+  if (!pushSupported()) return { ok: false, reason: "unsupported" };
+  if (!sessionStorage.getItem(JANA_SEVA_SESSION_KEY)) {
+    return { ok: false, reason: "subscribe-failed" };
+  }
+
+  const permission = await requestNotificationPermission();
+  if (permission !== "granted") return { ok: false, reason: "denied" };
+
+  const publicKey = await fetchVapidPublicKey();
+  if (!publicKey) return { ok: false, reason: "no-vapid" };
+
+  try {
+    const registration = await navigator.serviceWorker.register(SW_PATH);
+    await navigator.serviceWorker.ready;
+    const existing = await registration.pushManager.getSubscription();
+    const sub =
+      existing ??
+      (await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicKey),
+      }));
+
+    const p256dh = sub.getKey("p256dh");
+    const auth = sub.getKey("auth");
+    if (!p256dh || !auth) return { ok: false, reason: "subscribe-failed" };
+
+    const body = {
+      endpoint: sub.endpoint,
+      keys: {
+        p256dh: encodeSubscriptionKey(p256dh),
+        auth: encodeSubscriptionKey(auth),
+      },
+    };
+
+    await api.subscribeVolunteerPush(body);
+    localStorage.setItem("jana_seva_push_subscribed", "1");
+    return { ok: true };
+  } catch {
+    return { ok: false, reason: "subscribe-failed" };
+  }
+}
+
+export async function syncJanaSevaVolunteerPushIfGranted(): Promise<void> {
+  if (!pushSupported() || Notification.permission !== "granted") return;
+  if (!sessionStorage.getItem(JANA_SEVA_SESSION_KEY)) return;
+  await subscribeJanaSevaVolunteerPush();
 }

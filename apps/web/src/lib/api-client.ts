@@ -269,6 +269,47 @@ class ApiClient {
       body: JSON.stringify(body),
     });
   }
+
+  getSuccessStories(params?: Record<string, string>) {
+    const qs = params ? "?" + new URLSearchParams(params).toString() : "";
+    return this.request<{ stories: JanaSevaSuccessStory[]; total: number; page: number }>(
+      `/charity/success-stories${qs}`,
+    );
+  }
+
+  getSuccessStory(slug: string) {
+    return this.request<JanaSevaSuccessStory>(`/charity/success-stories/${slug}`);
+  }
+
+  createSuccessStory(body: Record<string, unknown>) {
+    return this.charityRequest<JanaSevaSuccessStory>("/charity/success-stories", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
+  getVolunteerAlertPrefs() {
+    return this.charityRequest<{
+      registered: boolean;
+      pushAvailable: boolean;
+      hasPushSubscription: boolean;
+      preferences: VolunteerAlertPrefs | null;
+    }>("/charity/alerts/me");
+  }
+
+  updateVolunteerAlertPrefs(body: Partial<VolunteerAlertPrefs>) {
+    return this.charityRequest<VolunteerAlertPrefs>("/charity/alerts/me", {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    });
+  }
+
+  subscribeVolunteerPush(subscription: PushSubscriptionBody) {
+    return this.charityRequest<{ subscribed: boolean }>("/charity/alerts/push-subscribe", {
+      method: "POST",
+      body: JSON.stringify(subscription),
+    });
+  }
 }
 
 export interface Movie {
@@ -403,6 +444,34 @@ export interface CharityStats {
   volunteers: number;
   peopleHelped: number;
   activeEmergencies: number;
+  successStories?: number;
+}
+
+export interface SocialShareLinks {
+  shareText: string;
+  storyUrl?: string;
+  twitterUrl: string;
+  whatsappUrl: string;
+  facebookUrl: string;
+  copyText: string;
+}
+
+export interface JanaSevaSuccessStory {
+  id: string;
+  slug: string;
+  volunteerName: string;
+  sevaType: string;
+  sevaTypeLabel: string;
+  caption: string;
+  helpedSummary?: string;
+  helpedDisplay: string;
+  photoUrls: string[];
+  hashtags: string[];
+  city?: string | null;
+  state?: string | null;
+  viewCount: number;
+  createdAt: string;
+  share: SocialShareLinks;
 }
 
 export interface BloodRequest {
@@ -466,6 +535,20 @@ export interface Scholarship {
   category: string;
   applicationUrl: string;
   verificationStatus: string;
+}
+
+export interface VolunteerAlertPrefs {
+  id: string;
+  email: string;
+  city?: string | null;
+  state?: string | null;
+  emailAlertsEnabled: boolean;
+  pushAlertsEnabled: boolean;
+  notifyBlood: boolean;
+  notifyEmergency: boolean;
+  notifyCamps: boolean;
+  notifyEducation: boolean;
+  pushEndpoint?: string | null;
 }
 
 export interface CharityVolunteer {

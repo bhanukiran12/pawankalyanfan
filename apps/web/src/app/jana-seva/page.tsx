@@ -11,6 +11,7 @@ import {
   Shield,
   Heart,
   ArrowRight,
+  Camera,
 } from "lucide-react";
 import { PageShell } from "@/components/layout/section-background";
 import { PageHeading } from "@/components/layout/page-heading";
@@ -27,6 +28,7 @@ const modules = [
   { href: "/jana-seva/workshops", label: "Free Workshops", icon: GraduationCap, desc: "Skills & career sessions" },
   { href: "/jana-seva/scholarships", label: "Education Help", icon: GraduationCap, desc: "Scholarships & mentorship" },
   { href: "/jana-seva/volunteers", label: "Volunteer Network", icon: Users, desc: "Offer your time & skills" },
+  { href: "/jana-seva/stories", label: "Seva Stories", icon: Camera, desc: "Volunteers share who they helped" },
   { href: "/jana-seva/emergency", label: "Emergency Board", icon: AlertTriangle, desc: "Strictly moderated listings" },
 ];
 

@@ -23,6 +23,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/jana-seva/scholarships",
     "/jana-seva/volunteers",
     "/jana-seva/volunteers/register",
+    "/jana-seva/stories",
+    "/jana-seva/stories/new",
     "/blood-donation/hyderabad",
     "/blood-donation/vijayawada",
     "/privacy",

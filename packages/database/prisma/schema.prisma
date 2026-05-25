@@ -89,6 +89,7 @@ model User {
   charityReports    CharityAbuseReport[]
   savedCharityItems SavedCharityItem[]
   charityAuditLogs  CharityAuditLog[]
+  janaSevaStories   JanaSevaSuccessStory[]
 }
 
 model Account {
@@ -561,6 +562,17 @@ enum CharityItemType {
   WORKSHOP
   SCHOLARSHIP
   EMERGENCY
+  SUCCESS_STORY
+}
+
+enum JanaSevaSevaType {
+  BLOOD
+  BLOOD_CAMP
+  WORKSHOP
+  SCHOLARSHIP
+  EMERGENCY
+  EDUCATION
+  OTHER
 }
 
 model JanaSevaEmailOtp {
@@ -604,7 +616,30 @@ model CharityProfile {
   createdAt           DateTime      @default(now())
   updatedAt           DateTime      @updatedAt
 
-  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user           User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
+  volunteerAlert JanaSevaVolunteerAlert?
+}
+
+// Volunteer email + browser alerts when new help is posted
+model JanaSevaVolunteerAlert {
+  id                 String   @id @default(cuid())
+  email              String   @unique
+  charityProfileId   String?  @unique
+  city               String?
+  state              String?
+  emailAlertsEnabled Boolean  @default(true)
+  pushAlertsEnabled  Boolean  @default(true)
+  notifyBlood        Boolean  @default(true)
+  notifyEmergency    Boolean  @default(true)
+  notifyCamps        Boolean  @default(true)
+  notifyEducation    Boolean  @default(true)
+  pushEndpoint       String?  @unique
+  pushP256dh         String?
+  pushAuth           String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  charityProfile CharityProfile? @relation(fields: [charityProfileId], references: [id], onDelete: Cascade)
 }
 
 model BloodRequest {
@@ -774,4 +809,30 @@ model CharityAuditLog {
   createdAt  DateTime @default(now())
 
   actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+}
+
+// Volunteer shares who they helped — caption, photos, hashtags, social share
+model JanaSevaSuccessStory {
+  id              String           @id @default(cuid())
+  slug            String           @unique
+  volunteerName   String
+  contactEmail    String?
+  sevaType        JanaSevaSevaType
+  caption         String           @db.Text
+  helpedSummary   String           @db.Text
+  helpedDisplay   String
+  photoUrls       String[]
+  hashtags        String[]         @default([])
+  city            String?
+  state           String?
+  consentGiven    Boolean          @default(true)
+  verificationStatus CharityVerificationStatus @default(VERIFIED)
+  status          CharityListingStatus @default(OPEN)
+  viewCount       Int              @default(0)
+  userId          String?
+  verifiedAt      DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 }

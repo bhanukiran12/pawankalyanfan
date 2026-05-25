@@ -193,3 +193,26 @@ export const charityEmergencies: Prisma.EmergencyPostCreateInput[] = [
     status: "OPEN",
   },
 ];
+
+const samplePhoto =
+  "https://res.cloudinary.com/df7wnybwg/image/upload/v1779281316/pawankalaynfan/movies/pawan_kalayn_fan_logo_tuzxjy.png";
+
+export const charitySuccessStories: Prisma.JanaSevaSuccessStoryCreateInput[] = [
+  {
+    slug: "rama-hyderabad-blood-seva-story",
+    volunteerName: "Rama K.",
+    sevaType: "BLOOD",
+    caption:
+      "We connected 3 donors within 4 hours for an O+ need at KIMS. Grateful to every Power Star fan who responded. #JanaSeva works when we act together.",
+    helpedSummary: "Patient at KIMS Hospital, Secunderabad",
+    helpedDisplay: "Patient at KIMS Hospital, Secunderabad",
+    photoUrls: [samplePhoto],
+    hashtags: ["#JanaSeva", "#PawanKalyanFan", "#PowerStar", "#BloodDonation"],
+    city: "Hyderabad",
+    state: "Telangana",
+    consentGiven: true,
+    verificationStatus: "VERIFIED",
+    verifiedAt: new Date(),
+    status: "OPEN",
+  },
+];

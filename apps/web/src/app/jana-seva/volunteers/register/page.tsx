@@ -42,9 +42,15 @@ export default function JanaSevaVolunteerRegisterPage() {
         isEventVolunteer: fd.get("isEventVolunteer") === "on",
         offersTransport: fd.get("offersTransport") === "on",
         isEmergencyResponder: fd.get("isEmergencyResponder") === "on",
+        emailAlertsEnabled: fd.get("emailAlertsEnabled") === "on",
+        pushAlertsEnabled: fd.get("pushAlertsEnabled") === "on",
+        notifyBlood: fd.get("notifyBlood") === "on",
+        notifyEmergency: fd.get("notifyEmergency") === "on",
+        notifyEducation: fd.get("notifyEducation") === "on",
+        notifyCamps: fd.get("notifyCamps") === "on",
       });
-      toast.success("Welcome to Jana Seva Volunteers!");
-      router.push("/jana-seva/volunteers");
+      toast.success("Welcome! Turn on browser alerts on the next screen.");
+      router.push("/jana-seva/volunteers?alerts=1");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Registration failed");
     } finally {
@@ -94,6 +100,27 @@ export default function JanaSevaVolunteerRegisterPage() {
               <div>
                 <FieldLabel htmlFor="availability">Availability</FieldLabel>
                 <Input id="availability" name="availability" className="glass mt-1" placeholder="Weekends, evenings" />
+              </div>
+              <div className="rounded-lg border border-brand-red/30 bg-brand-red/5 p-4 space-y-2 text-sm text-white/80">
+                <p className="font-medium text-white">Help alerts</p>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" name="emailAlertsEnabled" defaultChecked /> Email me when someone needs help
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" name="pushAlertsEnabled" defaultChecked /> I will enable browser alerts after registering
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" name="notifyBlood" defaultChecked /> Blood requests
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" name="notifyEmergency" defaultChecked /> Emergency help
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" name="notifyEducation" defaultChecked /> Education help
+                </label>
+                <label className="flex items-center gap-2">
+                  <input type="checkbox" name="notifyCamps" defaultChecked /> Blood camps in my city
+                </label>
               </div>
               <div className="space-y-2 text-sm text-white/70">
                 <label className="flex items-center gap-2">

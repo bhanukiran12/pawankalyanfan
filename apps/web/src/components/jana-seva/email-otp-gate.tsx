@@ -35,9 +35,9 @@ export function EmailOtpGate({ children }: { children: React.ReactNode }) {
       const res = await api.sendJanaSevaOtp(email.trim());
       setStep("code");
       if (res.devCode) {
-        toast.message(`Dev OTP: ${res.devCode}`, { duration: 15000 });
+        toast.message(`Email not sent — use this OTP: ${res.devCode}`, { duration: 20000 });
       } else {
-        toast.success("OTP sent. Check your email.");
+        toast.success(res.message || "OTP sent. Check your email and spam folder.");
       }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Could not send OTP");

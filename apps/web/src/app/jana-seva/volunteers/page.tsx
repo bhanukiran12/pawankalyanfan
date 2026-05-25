@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Users } from "lucide-react";
 import { PageShell } from "@/components/layout/section-background";
 import { PageHeading } from "@/components/layout/page-heading";
@@ -9,7 +10,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageLoader } from "@/components/ui/skeleton";
+import { VolunteerAlertsPanel } from "@/components/jana-seva/volunteer-alerts-panel";
 import { api, type CharityVolunteer } from "@/lib/api-client";
+import { syncJanaSevaVolunteerPushIfGranted } from "@/lib/push-client";
 
 const tierLabels: Record<string, string> = {
   BRONZE: "Bronze Helper",
@@ -19,7 +22,8 @@ const tierLabels: Record<string, string> = {
   LEGEND: "Legend Volunteer",
 };
 
-export default function VolunteersPage() {
+function VolunteersContent() {
+  const searchParams = useSearchParams();
   const [volunteers, setVolunteers] = useState<CharityVolunteer[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -30,6 +34,12 @@ export default function VolunteersPage() {
       .catch(() => setVolunteers([]))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get("alerts") === "1") {
+      syncJanaSevaVolunteerPushIfGranted();
+    }
+  }, [searchParams]);
 
   return (
     <PageShell background="form" overlay="gradient">
@@ -43,6 +53,9 @@ export default function VolunteersPage() {
         <Link href="/jana-seva" className="text-sm text-brand-red mt-2 inline-block">
           ← Jana Seva
         </Link>
+
+        <VolunteerAlertsPanel />
+
         {loading ? (
           <PageLoader />
         ) : (
@@ -69,5 +82,13 @@ export default function VolunteersPage() {
         )}
       </div>
     </PageShell>
+  );
+}
+
+export default function VolunteersPage() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <VolunteersContent />
+    </Suspense>
   );
 }

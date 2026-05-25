@@ -60,9 +60,9 @@ export function generateSEO({
     metadataBase: new URL(SITE.url),
     alternates: { canonical: url },
     icons: {
-      icon: [{ url: "/icon", type: "image/png", sizes: "48x48" }],
-      apple: [{ url: "/apple-icon", type: "image/png", sizes: "180x180" }],
-      shortcut: "/icon",
+      icon: [{ url: "/pk-fan-logo.png", type: "image/png", sizes: "48x48" }],
+      apple: [{ url: "/pk-fan-logo.png", type: "image/png", sizes: "180x180" }],
+      shortcut: "/pk-fan-logo.png",
     },
     openGraph: {
       title: fullTitle,

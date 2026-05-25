@@ -11,6 +11,7 @@ import {
   Presentation,
   Award,
   HandHeart,
+  Camera,
 } from "lucide-react";
 
 export const JANA_SEVA_SESSION_KEY = "janaSevaSession";
@@ -105,7 +106,26 @@ export const OFFER_HELP_CATEGORIES: NeedHelpCategory[] = [
     href: "/jana-seva/volunteers/register",
     icon: HandHeart,
   },
+  {
+    id: "success-story",
+    label: "Share your seva story",
+    description: "Post photos & caption of who you helped — share on social media",
+    href: "/jana-seva/stories/new",
+    icon: Camera,
+  },
 ];
+
+export const SEVA_STORY_TYPES = [
+  { value: "BLOOD", label: "Blood donation help" },
+  { value: "BLOOD_CAMP", label: "Blood camp" },
+  { value: "WORKSHOP", label: "Workshop / training" },
+  { value: "SCHOLARSHIP", label: "Scholarship / education" },
+  { value: "EMERGENCY", label: "Emergency assistance" },
+  { value: "EDUCATION", label: "Education help" },
+  { value: "OTHER", label: "Other Jana Seva" },
+] as const;
+
+export const DEFAULT_STORY_HASHTAGS = "JanaSeva, PawanKalyanFan, PowerStar, Seva";
 
 export const WORKSHOP_CATEGORIES = [
   "coding",
