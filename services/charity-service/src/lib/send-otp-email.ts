@@ -1,11 +1,11 @@
 /**
  * Sends Jana Seva OTP emails via Resend (preferred) or SMTP.
  */
-import { sendTransactionalEmail, type OtpEmailResult } from "./send-transactional-email";
+import { sendTransactionalEmail, type SendEmailResult } from "./send-transactional-email";
 
-export type { OtpEmailResult };
+export type OtpEmailResult = SendEmailResult;
 
-export async function sendJanaSevaOtpEmail(to: string, code: string): Promise<OtpEmailResult> {
+export async function sendJanaSevaOtpEmail(to: string, code: string): Promise<SendEmailResult> {
   const siteName = process.env.SITE_NAME || "PawanKalyanFan Jana Seva";
   const html = `
     <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;">
