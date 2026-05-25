@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
 import { pushSupported, subscribeToPushNotifications } from "@/lib/push-client";
+import { SenaniStudentsCta } from "@/components/janasena/senani-students-cta";
 
 export default function JanasenaNewsPage() {
   const [articles, setArticles] = useState<JanasenaArticle[]>([]);
@@ -69,6 +70,10 @@ export default function JanasenaNewsPage() {
               </Button>
             )}
           </div>
+        </FadeIn>
+
+        <FadeIn delay={0.05} className="mt-6 sm:mt-8">
+          <SenaniStudentsCta />
         </FadeIn>
 
         {loading ? (

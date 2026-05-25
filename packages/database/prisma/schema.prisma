@@ -80,6 +80,15 @@ model User {
   reports           Report[]
   affiliateClicks   AffiliateClick[]
   notifications     Notification[]
+  charityProfile    CharityProfile?
+  bloodRequests     BloodRequest[]
+  bloodCamps        BloodCamp[]
+  workshops         Workshop[]
+  scholarships      Scholarship[]
+  emergencyPosts    EmergencyPost[]
+  charityReports    CharityAbuseReport[]
+  savedCharityItems SavedCharityItem[]
+  charityAuditLogs  CharityAuditLog[]
 }
 
 model Account {
@@ -499,4 +508,270 @@ model AiPrompt {
   system    String   @db.Text
   active    Boolean  @default(true)
   updatedAt DateTime @updatedAt
+}
+
+// ─── Jana Seva (verified community help) ───────────────────
+
+enum CharityVerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  SUSPENDED
+}
+
+enum BloodUrgency {
+  NORMAL
+  URGENT
+  CRITICAL
+}
+
+enum CharityListingStatus {
+  OPEN
+  FULFILLED
+  EXPIRED
+  CLOSED
+  REJECTED
+}
+
+enum WorkshopMode {
+  ONLINE
+  OFFLINE
+  HYBRID
+}
+
+enum EmergencyCategory {
+  AMBULANCE
+  MEDICINE
+  TRANSPORT
+  OXYGEN
+  URGENT_ASSISTANCE
+}
+
+enum VolunteerTier {
+  BRONZE
+  SILVER
+  GOLD
+  HERO
+  LEGEND
+}
+
+enum CharityItemType {
+  BLOOD_REQUEST
+  BLOOD_CAMP
+  WORKSHOP
+  SCHOLARSHIP
+  EMERGENCY
+}
+
+model JanaSevaEmailOtp {
+  id        String   @id @default(cuid())
+  email     String
+  codeHash  String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
+model JanaSevaPostSession {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model CharityProfile {
+  id                  String        @id @default(cuid())
+  userId              String?       @unique
+  displayName         String
+  contactEmail        String?
+  city                String
+  state               String
+  skills              String[]      @default([])
+  isBloodDonor        Boolean       @default(false)
+  isWorkshopMentor    Boolean       @default(false)
+  isEventVolunteer    Boolean       @default(false)
+  offersTransport     Boolean       @default(false)
+  isEmergencyResponder Boolean      @default(false)
+  availability        String?       @db.Text
+  profileImage        String?
+  phone               String?
+  verificationStatus  CharityVerificationStatus @default(VERIFIED)
+  contributionScore   Int           @default(0)
+  tier                VolunteerTier @default(BRONZE)
+  verifiedAt          DateTime?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model BloodRequest {
+  id                 String                    @id @default(cuid())
+  slug               String                    @unique
+  patientName        String?
+  patientAge         Int?
+  hospitalName       String
+  hospitalAddress    String
+  city               String
+  state              String
+  bloodGroup         String
+  unitsRequired      Int                       @default(1)
+  urgency            BloodUrgency              @default(NORMAL)
+  doctorNoteUrl      String?
+  phone              String
+  alternatePhone     String?
+  whatsapp           String?
+  expiresAt          DateTime
+  anonymous          Boolean                   @default(false)
+  consentGiven       Boolean                   @default(true)
+  verificationStatus CharityVerificationStatus @default(PENDING)
+  status             CharityListingStatus      @default(OPEN)
+  fulfilledAt        DateTime?
+  userId             String?
+  latitude           Float?
+  longitude          Float?
+  viewCount          Int                       @default(0)
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+
+  user    User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  reports CharityAbuseReport[]
+}
+
+model BloodCamp {
+  id                 String                    @id @default(cuid())
+  slug               String                    @unique
+  title              String
+  organizerName      String
+  organization       String?
+  address            String
+  city               String
+  state              String
+  latitude           Float?
+  longitude          Float?
+  campDate           DateTime
+  campTime           String
+  phone              String
+  registrationUrl    String?
+  description        String                    @db.Text
+  posterUrl          String?
+  verificationStatus CharityVerificationStatus @default(PENDING)
+  status             CharityListingStatus      @default(OPEN)
+  rsvpCount          Int                       @default(0)
+  userId             String?
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model Workshop {
+  id                 String                    @id @default(cuid())
+  slug               String                    @unique
+  title              String
+  speaker            String
+  organization       String?
+  category           String
+  mode               WorkshopMode              @default(ONLINE)
+  city               String?
+  workshopDate       DateTime
+  workshopTime       String
+  capacity           Int?
+  registrationUrl    String?
+  whatsappGroupUrl   String?
+  posterUrl          String?
+  certificateAvailable Boolean                 @default(false)
+  isFree             Boolean                   @default(true)
+  description        String                    @db.Text
+  verificationStatus CharityVerificationStatus @default(PENDING)
+  status             CharityListingStatus      @default(OPEN)
+  trending           Boolean                   @default(false)
+  userId             String?
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model Scholarship {
+  id                 String                    @id @default(cuid())
+  slug               String                    @unique
+  title              String
+  provider           String
+  amount             String?
+  eligibility        String                    @db.Text
+  deadline           DateTime
+  applicationUrl     String
+  category           String
+  documentsRequired  String?                   @db.Text
+  description        String                    @db.Text
+  verificationStatus CharityVerificationStatus @default(PENDING)
+  status             CharityListingStatus      @default(OPEN)
+  userId             String?
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model EmergencyPost {
+  id                 String                    @id @default(cuid())
+  slug               String                    @unique
+  title              String
+  category           EmergencyCategory
+  description        String                    @db.Text
+  city               String
+  state              String
+  phone              String
+  expiresAt          DateTime
+  verificationStatus CharityVerificationStatus @default(PENDING)
+  status             CharityListingStatus      @default(OPEN)
+  trustScore         Int                       @default(0)
+  userId             String?
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+
+  user    User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  reports CharityAbuseReport[]
+}
+
+model CharityAbuseReport {
+  id         String   @id @default(cuid())
+  reason     String
+  details    String?  @db.Text
+  resolved   Boolean  @default(false)
+  reporterId String?
+  bloodRequestId String?
+  emergencyPostId String?
+  createdAt  DateTime @default(now())
+
+  reporter      User?          @relation(fields: [reporterId], references: [id], onDelete: SetNull)
+  bloodRequest  BloodRequest?  @relation(fields: [bloodRequestId], references: [id], onDelete: Cascade)
+  emergencyPost EmergencyPost? @relation(fields: [emergencyPostId], references: [id], onDelete: Cascade)
+}
+
+model SavedCharityItem {
+  id        String          @id @default(cuid())
+  userId    String
+  itemType  CharityItemType
+  itemId    String
+  createdAt DateTime        @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itemType, itemId])
+}
+
+model CharityAuditLog {
+  id         String   @id @default(cuid())
+  action     String
+  entityType String
+  entityId   String
+  actorId    String?
+  metadata   String?  @db.Text
+  createdAt  DateTime @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
 }

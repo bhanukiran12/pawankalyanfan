@@ -19,14 +19,31 @@ export const SITE = {
   locale: "en_IN",
 } as const;
 
+/** Senani Students Wing — external registration (official wing form). */
+export const SENANI_STUDENTS_WING = {
+  name: "Senani Students Wing",
+  registrationUrl: "https://senanistudentswing.rf.gd/forms/survey.php?i=1",
+  websiteUrl: "https://senanistudentswing.rf.gd",
+  flyerImage: "/janasena/senani-students-wing-flyer.png",
+} as const;
+
+/** Top header + mobile menu (PK Birthday is footer-only). */
 export const NAV_LINKS = [
   { href: "/movies", label: "Movies" },
+  { href: "/jana-seva", label: "Jana Seva" },
   { href: "/janasena-news", label: "Jana Sena News" },
+  { href: "/janasena-students", label: "Students Wing" },
   { href: "/quotes", label: "Quotes" },
   { href: "/wallpapers", label: "Wallpapers" },
   { href: "/blogs", label: "Blogs" },
   { href: "/events", label: "Events" },
   { href: "/contact", label: "Partnerships" },
+] as const;
+
+/** Footer menu includes header links plus PK Birthday countdown page. */
+export const FOOTER_NAV_LINKS = [
+  ...NAV_LINKS,
+  { href: "/pk-birthday", label: "PK Birthday" },
 ] as const;
 
 export const QUOTE_CATEGORIES = [

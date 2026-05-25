@@ -15,7 +15,7 @@ services:
     dockerfilePath: ./Dockerfile
     plan: starter
     healthCheckPath: /
-    releaseCommand: npx prisma db push --schema=packages/database/prisma/schema.prisma --accept-data-loss
+    releaseCommand: npx prisma db push --schema=packages/database/prisma/schema.prisma --accept-data-loss && npm run db:seed
     envVars:
       - key: NODE_ENV
         value: production
@@ -39,6 +39,8 @@ services:
         value: http://127.0.0.1:4004
       - key: AI_SERVICE_URL
         value: http://127.0.0.1:4005
+      - key: CHARITY_SERVICE_URL
+        value: http://127.0.0.1:4006
       - key: API_GATEWAY_URL
         value: http://127.0.0.1:4000
       - key: API_GATEWAY_HOST
@@ -57,6 +59,20 @@ services:
       - key: VAPID_SUBJECT
         value: mailto:admin@pawankalyanfan.com
       - key: NEXT_PUBLIC_VAPID_PUBLIC_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM
         sync: false
       - key: OPENROUTER_API_KEY
         sync: false

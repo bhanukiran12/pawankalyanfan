@@ -8,6 +8,14 @@ import { blogs as blogData, blogPayload, type BlogSeed } from "./data/blogs";
 import { wallpapers as wallpaperData, wallpaperTags, type WallpaperSeed } from "./data/wallpapers";
 import { forumThreads as forumThreadData, FORUM_CATEGORY_SLUG, type ForumThreadSeed } from "./data/forum-threads";
 import { fanEdits as fanEditData, type FanEditSeed } from "./data/fan-edits";
+import {
+  charityBloodRequests,
+  charityBloodCamps,
+  charityWorkshops,
+  charityScholarships,
+  charityVolunteers,
+  charityEmergencies,
+} from "./data/charity-seed";
 import type { User } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -396,6 +404,33 @@ async function main() {
     eventsTimeline.map((e) => seedTimelineEvent(e, movieBySlug))
   );
   console.log("✅ Timeline events:", seededTimeline.length);
+
+  for (const row of charityBloodRequests) {
+    await prisma.bloodRequest.upsert({ where: { slug: row.slug }, update: row, create: row });
+  }
+  for (const row of charityBloodCamps) {
+    await prisma.bloodCamp.upsert({ where: { slug: row.slug }, update: row, create: row });
+  }
+  for (const row of charityWorkshops) {
+    await prisma.workshop.upsert({ where: { slug: row.slug }, update: row, create: row });
+  }
+  for (const row of charityScholarships) {
+    await prisma.scholarship.upsert({ where: { slug: row.slug }, update: row, create: row });
+  }
+  for (const row of charityVolunteers) {
+    const existing = await prisma.charityProfile.findFirst({
+      where: { displayName: row.displayName, city: row.city },
+    });
+    if (existing) {
+      await prisma.charityProfile.update({ where: { id: existing.id }, data: row });
+    } else {
+      await prisma.charityProfile.create({ data: row });
+    }
+  }
+  for (const row of charityEmergencies) {
+    await prisma.emergencyPost.upsert({ where: { slug: row.slug }, update: row, create: row });
+  }
+  console.log("✅ Jana Seva sample listings seeded");
 
   console.log("🎉 Seed completed!");
 }

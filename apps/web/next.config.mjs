@@ -6,6 +6,8 @@ const nextConfig = {
     return [
       { source: "/news", destination: "/blogs", permanent: true },
       { source: "/news/:slug", destination: "/blogs/:slug", permanent: true },
+      { source: "/community-charity", destination: "/jana-seva", permanent: true },
+      { source: "/community-charity/:path*", destination: "/jana-seva/:path*", permanent: true },
     ];
   },
 };

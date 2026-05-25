@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { SITE } from "@/lib/constants";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { FadeIn } from "@/components/motion/fade-in";
@@ -59,6 +60,37 @@ function BlogCard({ post, lang }: { post: NewsPost; lang: BlogLang }) {
   );
 }
 
+function BlogsJsonLd({ posts }: { posts: NewsPost[] }) {
+  useEffect(() => {
+    const data = {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      name: "Pawan Kalyan Fan Blogs",
+      description: "Pawan Kalyan news, movies, politics, and Power Star guides",
+      url: `${SITE.url.replace(/\/$/, "")}/blogs`,
+      publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+      blogPost: posts.slice(0, 20).map((p) => ({
+        "@type": "BlogPosting",
+        headline: p.title,
+        description: p.excerpt,
+        url: `${SITE.url.replace(/\/$/, "")}/blogs/${p.slug}`,
+        datePublished: p.publishedAt,
+      })),
+    };
+    const id = "blogs-jsonld";
+    let script = document.getElementById(id) as HTMLScriptElement | null;
+    if (!script) {
+      script = document.createElement("script");
+      script.id = id;
+      script.type = "application/ld+json";
+      document.head.appendChild(script);
+    }
+    script.textContent = JSON.stringify(data);
+    return () => script?.remove();
+  }, [posts]);
+  return null;
+}
+
 export default function BlogsPage() {
   const [posts, setPosts] = useState<NewsPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,24 +98,25 @@ export default function BlogsPage() {
 
   useEffect(() => {
     api
-      .getNews({ category: "Blog", limit: "30" })
+      .getNews({ category: "Blog", limit: "60" })
       .then((d) => setPosts(d.posts))
       .finally(() => setLoading(false));
   }, []);
 
   return (
     <PageShell background="news">
+      <BlogsJsonLd posts={posts} />
       <div className="container-page py-6 sm:py-8">
         <FadeIn>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0 flex-1">
               <h1 className="page-title">
-                {lang === "te" ? "బ్లాగ్‌లు" : "Blogs"}
+                {lang === "te" ? "పవన్ కళ్యాణ్ బ్లాగ్‌లు" : "Pawan Kalyan Blogs"}
               </h1>
               <p className="page-subtitle">
                 {lang === "te"
-                  ? "ఉప ముఖ్యమంత్రి పవన్ కళ్యాణ్ — రాజకీయ ప్రయాణం, పాలన, జనసేన & Andhra Pradesh అభివృద్ధి"
-                  : "Deputy CM Pawan Kalyan — political journey, governance, Jana Sena & Andhra Pradesh development"}
+                  ? "పవన్ కళ్యాణ్ తాజా వార్తలు, సినిమాలు, జనసేన, Power Star గైడ్‌లు — అధికారికం కాదు, ఫ్యాన్ ట్రిబ్యూట్"
+                  : "Latest Pawan Kalyan news, movies, Jana Sena, Deputy CM updates, OG & HHVM — Power Star / PSPK guides for fans (unofficial tribute)."}
               </p>
             </div>
             <BlogLanguageToggle lang={lang} onChange={setLang} />

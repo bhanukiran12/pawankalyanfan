@@ -18,6 +18,7 @@ import {
   removePushSubscription,
   type PushSubscriptionPayload,
 } from "./push";
+import { getPkBirthdayCountdown, buildPkBirthdayShare } from "./pk-birthday";
 
 const app = createServiceApp("content-service");
 configureWebPush();
@@ -261,6 +262,17 @@ app.put("/admin/movies/:id", authMiddleware, requireAdmin, asyncHandler(async (r
 app.delete("/admin/movies/:id", authMiddleware, requireAdmin, asyncHandler(async (req, res) => {
   await prisma.movie.delete({ where: { id: req.params.id } });
   success(res, { deleted: true });
+}));
+
+// ─── PK Birthday countdown (footer / social share) ─────────
+app.get("/pk-birthday/countdown", asyncHandler(async (_req, res) => {
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.SITE_URL ||
+    "https://pawankalyanfan.com";
+  const countdown = getPkBirthdayCountdown(new Date());
+  const share = buildPkBirthdayShare(siteUrl, countdown);
+  success(res, { countdown, share, updatedAt: new Date().toISOString() });
 }));
 
 app.get("/admin/stats", authMiddleware, requireAdmin, asyncHandler(async (_req, res) => {

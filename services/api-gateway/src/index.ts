@@ -60,6 +60,7 @@ app.use("/api/news", createProxyMiddleware(mountedProxy(SERVICE_URLS.CONTENT, "/
 app.use("/api/wallpapers", createProxyMiddleware(mountedProxy(SERVICE_URLS.CONTENT, "/wallpapers")));
 app.use("/api/events", createProxyMiddleware(mountedProxy(SERVICE_URLS.CONTENT, "/events")));
 app.use("/api/home", createProxyMiddleware(mountedProxy(SERVICE_URLS.CONTENT, "/home")));
+app.use("/api/pk-birthday", createProxyMiddleware(mountedProxy(SERVICE_URLS.CONTENT, "/pk-birthday")));
 app.use("/api/janasena-news", createProxyMiddleware(mountedProxy(SERVICE_URLS.CONTENT, "/janasena-news")));
 app.use("/api/push", createProxyMiddleware(mountedProxy(SERVICE_URLS.CONTENT, "/push")));
 
@@ -75,6 +76,9 @@ app.use("/api/ads", createProxyMiddleware(proxy(SERVICE_URLS.BILLING, { "^/api/a
 
 // ─── AI Service ───────────────────────────────────────────
 app.use("/api/ai", createProxyMiddleware(proxy(SERVICE_URLS.AI, { "^/api/ai": "" })));
+
+// ─── Jana Seva (charity service) ─────────────────────────
+app.use("/api/charity", createProxyMiddleware(mountedProxy(SERVICE_URLS.CHARITY, "")));
 
 // ─── Aggregated Admin Dashboard ───────────────────────────
 app.get("/api/admin", authMiddleware, async (req, res) => {
@@ -139,6 +143,7 @@ app.get("/api/health", async (_req, res) => {
     { name: "community", url: SERVICE_URLS.COMMUNITY },
     { name: "billing", url: SERVICE_URLS.BILLING },
     { name: "ai", url: SERVICE_URLS.AI },
+    { name: "charity", url: SERVICE_URLS.CHARITY },
   ];
 
   const results = await Promise.all(
@@ -164,6 +169,7 @@ app.listen(PORT, () => {
   console.log(`   Community → ${SERVICE_URLS.COMMUNITY}`);
   console.log(`   Billing   → ${SERVICE_URLS.BILLING}`);
   console.log(`   AI        → ${SERVICE_URLS.AI}`);
+  console.log(`   Charity   → ${SERVICE_URLS.CHARITY}`);
 });
 
 export default app;

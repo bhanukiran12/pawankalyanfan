@@ -1,16 +1,45 @@
 import { MetadataRoute } from "next";
 import { SITE } from "@/lib/constants";
+import { blogSitemapEntries } from "../../../packages/database/prisma/data/blogs";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
-    "", "/movies", "/quotes", "/wallpapers",
-    "/blogs", "/events", "/contact", "/privacy", "/terms", "/ai",
+    "",
+    "/movies",
+    "/pk-birthday",
+    "/quotes",
+    "/wallpapers",
+    "/janasena-news",
+    "/janasena-students",
+    "/blogs",
+    "/events",
+    "/contact",
+    "/jana-seva",
+    "/jana-seva/need-help",
+    "/jana-seva/blood",
+    "/jana-seva/camps",
+    "/jana-seva/workshops",
+    "/jana-seva/scholarships",
+    "/jana-seva/volunteers",
+    "/jana-seva/volunteers/register",
+    "/blood-donation/hyderabad",
+    "/blood-donation/vijayawada",
+    "/privacy",
+    "/terms",
+    "/ai",
   ].map((path) => ({
     url: `${SITE.url}${path}`,
     lastModified: new Date(),
-    changeFrequency: "daily" as const,
-    priority: path === "" ? 1 : 0.8,
+    changeFrequency: (path === "" ? "daily" : "weekly") as const,
+    priority: path === "" ? 1 : path === "/blogs" ? 0.9 : 0.8,
   }));
 
-  return staticPages;
+  const blogPages = blogSitemapEntries.map((b) => ({
+    url: `${SITE.url}/blogs/${b.slug}`,
+    lastModified: new Date(b.publishedAt),
+    changeFrequency: "weekly" as const,
+    priority: 0.85,
+  }));
+
+  return [...staticPages, ...blogPages];
 }

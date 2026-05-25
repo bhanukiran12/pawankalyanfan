@@ -23,6 +23,7 @@ RUN npm run build --workspace=@pkf/shared && \
     npm run build --workspace=@pkf/community-service && \
     npm run build --workspace=@pkf/billing-service && \
     npm run build --workspace=@pkf/ai-service && \
+    npm run build --workspace=@pkf/charity-service && \
     npm run build --workspace=@pkf/api-gateway
 
 FROM node:20-alpine AS web-builder

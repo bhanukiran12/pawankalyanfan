@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { SiteLogo } from "@/components/layout/site-logo";
-import { SITE, NAV_LINKS } from "@/lib/constants";
+import { SITE, FOOTER_NAV_LINKS } from "@/lib/constants";
 
 export function SiteFooter() {
   return (
@@ -26,7 +26,7 @@ export function SiteFooter() {
           <div>
             <h4 className="mb-4 font-semibold">Menu</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              {NAV_LINKS.map((link) => (
+              {FOOTER_NAV_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="hover:text-brand-red transition-colors">
                     {link.label}

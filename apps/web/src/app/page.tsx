@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { FadeIn, StaggerContainer, StaggerItem, HeroText } from "@/components/motion/fade-in";
 import { HeaderAd, InContentAd } from "@/components/ads/ad-block";
 import { BrandCollaborations } from "@/components/home/brand-collaborations";
+import { PkBirthdayHub } from "@/components/home/pk-birthday-hub";
+import { JanaSevaHub } from "@/components/home/jana-seva-hub";
 import { QuoteSlider } from "@/components/home/quote-slider";
 import { ContentRail } from "@/components/home/content-rail";
 import { SiteLogo } from "@/components/layout/site-logo";
@@ -93,6 +95,10 @@ export default function HomePage() {
           )}
         </div>
       </SectionBackground>
+
+      <PkBirthdayHub />
+
+      <JanaSevaHub />
 
       <HeaderAd />
 

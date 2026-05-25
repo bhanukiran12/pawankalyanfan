@@ -1,4 +1,5 @@
 import { getGatewayOrigin } from "@/lib/gateway-url";
+import { JANA_SEVA_SESSION_KEY } from "@/lib/jana-seva";
 
 /** Browser uses same-origin /api (runtime proxy). SSR calls gateway directly when configured. */
 function resolveApiBaseUrl(): string {
@@ -68,6 +69,19 @@ class ApiClient {
     }
 
     return json.data as T;
+  }
+
+  private janaSevaHeaders(): Record<string, string> {
+    if (typeof window === "undefined") return {};
+    const token = sessionStorage.getItem(JANA_SEVA_SESSION_KEY);
+    return token ? { "X-Jana-Seva-Session": token } : {};
+  }
+
+  private charityRequest<T>(path: string, options: FetchOptions = {}): Promise<T> {
+    return this.request<T>(path, {
+      ...options,
+      headers: { ...this.janaSevaHeaders(), ...options.headers },
+    });
   }
 
   getHome() {
@@ -141,6 +155,97 @@ class ApiClient {
     return this.request<{ response: string }>("/ai/chat", {
       method: "POST",
       body: JSON.stringify({ message, history }),
+    });
+  }
+
+  getPkBirthdayCountdown() {
+    return this.request<PkBirthdayCountdownPayload>("/pk-birthday/countdown");
+  }
+
+  sendJanaSevaOtp(email: string) {
+    return this.request<{ sent: boolean; devCode?: string; message: string }>("/charity/otp/send", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
+  }
+
+  verifyJanaSevaOtp(email: string, code: string) {
+    return this.request<{ sessionToken: string; email: string; expiresAt: string }>(
+      "/charity/otp/verify",
+      { method: "POST", body: JSON.stringify({ email, code }) },
+    );
+  }
+
+  getCharityStats() {
+    return this.request<CharityStats>("/charity/stats");
+  }
+
+  getBloodRequests(params?: Record<string, string>) {
+    const qs = params ? "?" + new URLSearchParams(params).toString() : "";
+    return this.request<{ requests: BloodRequest[]; total: number; page: number }>(
+      `/charity/blood-requests${qs}`,
+    );
+  }
+
+  getBloodRequest(slug: string, reveal?: boolean) {
+    const qs = reveal ? "?reveal=true" : "";
+    return this.request<BloodRequest>(`/charity/blood-requests/${slug}${qs}`);
+  }
+
+  createBloodRequest(body: Record<string, unknown>) {
+    return this.charityRequest<BloodRequest>("/charity/blood-requests", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
+  createEmergencyPost(body: Record<string, unknown>) {
+    return this.charityRequest<EmergencyPost>("/charity/emergency", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
+  registerJanaSevaVolunteer(body: Record<string, unknown>) {
+    return this.charityRequest<CharityVolunteer>("/charity/volunteers/register", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
+  fulfillBloodRequest(id: string) {
+    return this.request<BloodRequest>(`/charity/blood-requests/${id}/fulfill`, { method: "PATCH" });
+  }
+
+  getBloodCamps(params?: Record<string, string>) {
+    const qs = params ? "?" + new URLSearchParams(params).toString() : "";
+    return this.request<{ camps: BloodCamp[]; total: number }>(`/charity/blood-camps${qs}`);
+  }
+
+  getWorkshops(params?: Record<string, string>) {
+    const qs = params ? "?" + new URLSearchParams(params).toString() : "";
+    return this.request<{ workshops: Workshop[]; total: number }>(`/charity/workshops${qs}`);
+  }
+
+  getScholarships(params?: Record<string, string>) {
+    const qs = params ? "?" + new URLSearchParams(params).toString() : "";
+    return this.request<{ scholarships: Scholarship[]; total: number }>(`/charity/scholarships${qs}`);
+  }
+
+  getVolunteers(params?: Record<string, string>) {
+    const qs = params ? "?" + new URLSearchParams(params).toString() : "";
+    return this.request<{ volunteers: CharityVolunteer[]; total: number }>(`/charity/volunteers${qs}`);
+  }
+
+  getEmergencyPosts(params?: Record<string, string>) {
+    const qs = params ? "?" + new URLSearchParams(params).toString() : "";
+    return this.request<{ posts: EmergencyPost[]; total: number }>(`/charity/emergency${qs}`);
+  }
+
+  reportCharityAbuse(body: { reason: string; details?: string; bloodRequestId?: string; emergencyPostId?: string }) {
+    return this.request<{ id: string }>("/charity/reports", {
+      method: "POST",
+      body: JSON.stringify(body),
     });
   }
 }
@@ -247,6 +352,123 @@ export interface HomeData {
   news: NewsPost[];
   wallpapers: Wallpaper[];
   events: TimelineEvent[];
+}
+
+export interface PkBirthdayCountdownPayload {
+  countdown: {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+    isToday: boolean;
+    isBirthdaySeason: boolean;
+    birthdayLabel: string;
+    turningAge: number;
+  };
+  share: {
+    shareText: string;
+    twitterUrl: string;
+    whatsappUrl: string;
+    facebookUrl: string;
+    copyText: string;
+  };
+  updatedAt: string;
+}
+
+export interface CharityStats {
+  activeBloodRequests: number;
+  bloodCamps: number;
+  workshops: number;
+  volunteers: number;
+  peopleHelped: number;
+  activeEmergencies: number;
+}
+
+export interface BloodRequest {
+  id: string;
+  slug: string;
+  patientName?: string | null;
+  patientAge?: number | null;
+  hospitalName: string;
+  hospitalAddress: string;
+  city: string;
+  state: string;
+  bloodGroup: string;
+  unitsRequired: number;
+  urgency: "NORMAL" | "URGENT" | "CRITICAL";
+  phone: string;
+  alternatePhone?: string | null;
+  whatsapp?: string | null;
+  expiresAt: string;
+  verificationStatus: string;
+  status: string;
+  anonymous?: boolean;
+  viewCount?: number;
+  createdAt?: string;
+}
+
+export interface BloodCamp {
+  id: string;
+  slug: string;
+  title: string;
+  organizerName: string;
+  city: string;
+  state: string;
+  campDate: string;
+  campTime: string;
+  phone: string;
+  description: string;
+  verificationStatus: string;
+}
+
+export interface Workshop {
+  id: string;
+  slug: string;
+  title: string;
+  speaker: string;
+  category: string;
+  mode: string;
+  city?: string | null;
+  workshopDate: string;
+  isFree: boolean;
+  trending?: boolean;
+  verificationStatus: string;
+}
+
+export interface Scholarship {
+  id: string;
+  slug: string;
+  title: string;
+  provider: string;
+  amount?: string | null;
+  deadline: string;
+  category: string;
+  applicationUrl: string;
+  verificationStatus: string;
+}
+
+export interface CharityVolunteer {
+  id: string;
+  displayName: string;
+  city: string;
+  state: string;
+  skills: string[];
+  tier: string;
+  contributionScore: number;
+  isBloodDonor: boolean;
+  phone?: string | null;
+  contactEmail?: string | null;
+}
+
+export interface EmergencyPost {
+  id: string;
+  slug: string;
+  title: string;
+  category: string;
+  description: string;
+  city: string;
+  phone: string;
+  verificationStatus: string;
 }
 
 export const api = new ApiClient(API_URL);

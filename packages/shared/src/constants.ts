@@ -31,6 +31,7 @@ export const SERVICE_PORTS = {
   COMMUNITY: 4003,
   BILLING: 4004,
   AI: 4005,
+  CHARITY: 4006,
 } as const;
 
 export const SERVICE_URLS = {
@@ -39,6 +40,7 @@ export const SERVICE_URLS = {
   COMMUNITY: process.env.COMMUNITY_SERVICE_URL || `http://localhost:${SERVICE_PORTS.COMMUNITY}`,
   BILLING: process.env.BILLING_SERVICE_URL || `http://localhost:${SERVICE_PORTS.BILLING}`,
   AI: process.env.AI_SERVICE_URL || `http://localhost:${SERVICE_PORTS.AI}`,
+  CHARITY: process.env.CHARITY_SERVICE_URL || `http://localhost:${SERVICE_PORTS.CHARITY}`,
 } as const;
 
 export const AD_SLOTS = ["header", "sidebar", "in-content", "footer", "mobile-sticky"] as const;

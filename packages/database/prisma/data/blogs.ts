@@ -4,6 +4,7 @@ import {
 } from "./blog-highlights";
 import { blogsTe } from "./blogs-te";
 import { blogsLatest } from "./blogs-latest";
+import { blogsSeo } from "./blogs-seo";
 
 export type BlogSeed = {
   title: string;
@@ -371,7 +372,13 @@ For politically engaged fans of Pawan Kalyan, staying informed — tracking sche
   },
 ];
 
-export const blogs: BlogSeed[] = [...blogsLatest, ...blogsCore] as BlogSeed[];
+export const blogs: BlogSeed[] = [...blogsSeo, ...blogsLatest, ...blogsCore] as BlogSeed[];
+
+/** For sitemap / static generation */
+export const blogSitemapEntries = blogs.map((b) => ({
+  slug: b.slug,
+  publishedAt: b.publishedAt,
+}));
 
 export function blogPayload(item: BlogSeed) {
   const te = blogsTe[item.slug];
@@ -380,7 +387,18 @@ export function blogPayload(item: BlogSeed) {
     excerpt: item.excerpt,
     content: encodeBlogContent(item.highlights, item.content, te),
     category: "Blog",
-    tags: [...new Set([...item.tags, "Blog", "Pawan Kalyan", "Deputy CM"])],
+    tags: [
+      ...new Set([
+        ...item.tags,
+        "Blog",
+        "Pawan Kalyan",
+        "Power Star",
+        "PSPK",
+        "Pawan Kalyan latest news",
+        "Pawan Kalyan movies",
+        "Deputy CM",
+      ]),
+    ],
     coverImage: item.coverImage ?? null,
     published: true,
     featured: item.featured ?? false,
