@@ -90,17 +90,12 @@ export default function JanaSevaPage() {
         <FadeIn delay={0.2} className="mt-8 flex flex-wrap gap-3">
           <Link href="/jana-seva/need-help">
             <Button size="lg" className="min-h-[48px]">
-              <Heart className="mr-2 h-4 w-4" /> Need Help
+              <Heart className="mr-2 h-4 w-4" /> Request Help
             </Button>
           </Link>
-          <Link href="/jana-seva/blood/new">
+          <Link href="/jana-seva/offer-help">
             <Button variant="outline" size="lg" className="glass min-h-[48px] border-brand-red/40">
-              Post Blood Request
-            </Button>
-          </Link>
-          <Link href="/jana-seva/volunteers/register">
-            <Button variant="outline" size="lg" className="glass min-h-[48px]">
-              Jana Seva Volunteers <ArrowRight className="ml-2 h-4 w-4" />
+              Offer Help <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
         </FadeIn>

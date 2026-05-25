@@ -70,12 +70,12 @@ export function JanaSevaHub() {
           </Link>
           <Link href="/jana-seva/need-help">
             <Button variant="outline" size="lg" className="glass w-full sm:w-auto min-h-[48px] border-brand-red/40">
-              Need Help
+              Request Help
             </Button>
           </Link>
-          <Link href="/jana-seva/volunteers/register">
+          <Link href="/jana-seva/offer-help">
             <Button variant="outline" size="lg" className="glass w-full sm:w-auto min-h-[48px]">
-              Jana Seva Volunteers
+              Offer Help
             </Button>
           </Link>
         </FadeIn>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Plus } from "lucide-react";
 import { PageShell } from "@/components/layout/section-background";
 import { PageHeading } from "@/components/layout/page-heading";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,7 +26,14 @@ export default function ScholarshipsPage() {
   return (
     <PageShell background="form" overlay="gradient">
       <div className="container-page py-8 sm:py-12">
-        <PageHeading title="Education & Scholarships" subtitle="Scholarships, coaching, mentorship — verified listings." />
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <PageHeading title="Education & Scholarships" subtitle="Share or discover scholarships, coaching, and mentorship." />
+          <Link href="/jana-seva/scholarships/new">
+            <Button className="w-full sm:w-auto">
+              <Plus className="mr-2 h-4 w-4" /> Share Opportunity
+            </Button>
+          </Link>
+        </div>
         <Link href="/jana-seva" className="text-sm text-brand-red mt-2 inline-block">
           ← Jana Seva
         </Link>

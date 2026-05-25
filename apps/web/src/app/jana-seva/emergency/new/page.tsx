@@ -10,6 +10,7 @@ import { PageHeading } from "@/components/layout/page-heading";
 import { FadeIn } from "@/components/motion/fade-in";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { EmailOtpGate } from "@/components/jana-seva/email-otp-gate";
 import { EMERGENCY_CATEGORY_LABELS } from "@/lib/jana-seva";
 import { api } from "@/lib/api-client";
@@ -73,18 +74,13 @@ export default function NewEmergencyHelpPage() {
               </div>
               <div>
                 <FieldLabel htmlFor="category">Category *</FieldLabel>
-                <select
-                  id="category"
-                  name="category"
-                  defaultValue={defaultCategory}
-                  className="mt-1 w-full rounded-md glass border border-white/20 bg-black/40 px-3 py-2 text-white"
-                >
+                <Select id="category" name="category" defaultValue={defaultCategory} className="mt-1">
                   {Object.entries(EMERGENCY_CATEGORY_LABELS).map(([value, label]) => (
                     <option key={value} value={value}>
                       {label}
                     </option>
                   ))}
-                </select>
+                </Select>
               </div>
               <div>
                 <FieldLabel htmlFor="description">Details *</FieldLabel>

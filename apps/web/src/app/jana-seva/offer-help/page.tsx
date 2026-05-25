@@ -6,9 +6,9 @@ import { PageShell } from "@/components/layout/section-background";
 import { PageHeading } from "@/components/layout/page-heading";
 import { FadeIn } from "@/components/motion/fade-in";
 import { Card, CardContent } from "@/components/ui/card";
-import { NEED_HELP_CATEGORIES } from "@/lib/jana-seva";
+import { OFFER_HELP_CATEGORIES } from "@/lib/jana-seva";
 
-export default function NeedHelpPage() {
+export default function OfferHelpPage() {
   return (
     <PageShell background="form" overlay="hero">
       <div className="container-page py-8 sm:py-12">
@@ -17,13 +17,13 @@ export default function NeedHelpPage() {
         </Link>
         <FadeIn className="mt-4">
           <PageHeading
-            title="Need Help"
-            subtitle="Choose what kind of help you need. Email OTP verification is required before posting."
+            title="Offer Help"
+            subtitle="Volunteers and organizers can list blood camps, free workshops, scholarships, and register skills. Email OTP required before posting."
           />
         </FadeIn>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {NEED_HELP_CATEGORIES.map((cat) => {
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
+          {OFFER_HELP_CATEGORIES.map((cat) => {
             const Icon = cat.icon;
             return (
               <FadeIn key={cat.id}>
@@ -42,9 +42,9 @@ export default function NeedHelpPage() {
         </div>
 
         <p className="mt-8 text-sm text-white/50">
-          Want to organize a camp, workshop, or volunteer?{" "}
-          <Link href="/jana-seva/offer-help" className="text-brand-red hover:underline">
-            Offer help
+          Need something instead?{" "}
+          <Link href="/jana-seva/need-help" className="text-brand-red hover:underline">
+            Request help
           </Link>
         </p>
       </div>

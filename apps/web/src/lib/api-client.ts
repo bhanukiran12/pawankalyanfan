@@ -222,14 +222,35 @@ class ApiClient {
     return this.request<{ camps: BloodCamp[]; total: number }>(`/charity/blood-camps${qs}`);
   }
 
+  createBloodCamp(body: Record<string, unknown>) {
+    return this.charityRequest<BloodCamp>("/charity/blood-camps", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
   getWorkshops(params?: Record<string, string>) {
     const qs = params ? "?" + new URLSearchParams(params).toString() : "";
     return this.request<{ workshops: Workshop[]; total: number }>(`/charity/workshops${qs}`);
   }
 
+  createWorkshop(body: Record<string, unknown>) {
+    return this.charityRequest<Workshop>("/charity/workshops", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  }
+
   getScholarships(params?: Record<string, string>) {
     const qs = params ? "?" + new URLSearchParams(params).toString() : "";
     return this.request<{ scholarships: Scholarship[]; total: number }>(`/charity/scholarships${qs}`);
+  }
+
+  createScholarship(body: Record<string, unknown>) {
+    return this.charityRequest<Scholarship>("/charity/scholarships", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
   }
 
   getVolunteers(params?: Record<string, string>) {

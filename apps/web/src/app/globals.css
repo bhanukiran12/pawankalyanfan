@@ -54,6 +54,25 @@
     touch-action: manipulation;
   }
 
+  /* Native selects: dark popup + readable option text (especially on Windows) */
+  select {
+    color-scheme: dark;
+    color: hsl(var(--foreground));
+  }
+
+  select option,
+  select optgroup {
+    background-color: hsl(0 0% 7%);
+    color: hsl(0 0% 98%);
+  }
+
+  .select-field {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23fafafa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.65rem center;
+    background-size: 1rem;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;

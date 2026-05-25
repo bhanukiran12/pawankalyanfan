@@ -16,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/contact",
     "/jana-seva",
     "/jana-seva/need-help",
+    "/jana-seva/offer-help",
     "/jana-seva/blood",
     "/jana-seva/camps",
     "/jana-seva/workshops",

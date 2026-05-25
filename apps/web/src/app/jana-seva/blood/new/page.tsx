@@ -10,6 +10,7 @@ import { PageHeading } from "@/components/layout/page-heading";
 import { FadeIn } from "@/components/motion/fade-in";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { EmailOtpGate } from "@/components/jana-seva/email-otp-gate";
 import { api } from "@/lib/api-client";
 
@@ -105,11 +106,11 @@ export default function NewBloodRequestPage() {
               </div>
               <div>
                 <FieldLabel htmlFor="urgency">Urgency</FieldLabel>
-                <select id="urgency" name="urgency" className="mt-1 w-full rounded-md glass border border-white/20 bg-black/40 px-3 py-2 text-white">
+                <Select id="urgency" name="urgency" className="mt-1">
                   <option value="NORMAL">Normal</option>
                   <option value="URGENT">Urgent</option>
                   <option value="CRITICAL">Critical</option>
-                </select>
+                </Select>
               </div>
               <div>
                 <FieldLabel htmlFor="phone">Phone *</FieldLabel>

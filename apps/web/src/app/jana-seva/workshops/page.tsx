@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Plus } from "lucide-react";
 import { PageShell } from "@/components/layout/section-background";
 import { PageHeading } from "@/components/layout/page-heading";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { PageLoader } from "@/components/ui/skeleton";
 import { api, type Workshop } from "@/lib/api-client";
 import { formatDate } from "@/lib/utils";
@@ -25,7 +27,14 @@ export default function WorkshopsPage() {
   return (
     <PageShell background="form" overlay="gradient">
       <div className="container-page py-8 sm:py-12">
-        <PageHeading title="Free Workshops" subtitle="Coding, UPSC, career, health & more — community learning." />
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <PageHeading title="Free Workshops" subtitle="Anyone can host a free session — coding, UPSC, career, health & more." />
+          <Link href="/jana-seva/workshops/new">
+            <Button className="w-full sm:w-auto">
+              <Plus className="mr-2 h-4 w-4" /> Host Workshop
+            </Button>
+          </Link>
+        </div>
         <Link href="/jana-seva" className="text-sm text-brand-red mt-2 inline-block">
           ← Jana Seva
         </Link>

@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -57,8 +58,8 @@ export function MovieFilters() {
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <select
-          className="h-11 w-full sm:w-36 min-h-[44px] rounded-md border border-white/15 bg-black/30 px-3 text-sm"
+        <Select
+          className="h-11 w-full sm:w-36"
           value={activeYear}
           onChange={(e) => update("year", e.target.value)}
           aria-label="Filter by year"
@@ -69,7 +70,7 @@ export function MovieFilters() {
               {y}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
 
       <div className="flex flex-wrap gap-2">
