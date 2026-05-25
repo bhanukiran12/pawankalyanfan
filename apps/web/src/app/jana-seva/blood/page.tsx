@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Plus } from "lucide-react";
@@ -13,7 +13,7 @@ import { PageLoader } from "@/components/ui/skeleton";
 import { BloodRequestCard } from "@/components/charity/blood-request-card";
 import { api, type BloodRequest } from "@/lib/api-client";
 
-export default function BloodRequestsPage() {
+function BloodRequestsContent() {
   const searchParams = useSearchParams();
   const [requests, setRequests] = useState<BloodRequest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,7 +64,7 @@ export default function BloodRequestsPage() {
             onChange={(e) => setBloodGroup(e.target.value)}
             className="glass max-w-xs"
           />
-          <Button variant="outline" onClick={load} className="glass">
+          <Button variant="outline" onClick={() => load()} className="glass">
             Apply
           </Button>
         </FadeIn>
@@ -82,5 +82,13 @@ export default function BloodRequestsPage() {
         )}
       </div>
     </PageShell>
+  );
+}
+
+export default function BloodRequestsPage() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <BloodRequestsContent />
+    </Suspense>
   );
 }

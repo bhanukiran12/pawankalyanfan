@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 import { SITE } from "@/lib/constants";
-import { blogSitemapEntries } from "../../../packages/database/prisma/data/blogs";
+import { blogSitemapEntries } from "@/lib/blog-sitemap-entries";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
@@ -31,7 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ].map((path) => ({
     url: `${SITE.url}${path}`,
     lastModified: new Date(),
-    changeFrequency: (path === "" ? "daily" : "weekly") as const,
+    changeFrequency: path === "" ? ("daily" as const) : ("weekly" as const),
     priority: path === "" ? 1 : path === "/blogs" ? 0.9 : 0.8,
   }));
 

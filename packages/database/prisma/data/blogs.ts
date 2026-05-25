@@ -374,7 +374,7 @@ For politically engaged fans of Pawan Kalyan, staying informed — tracking sche
 
 export const blogs: BlogSeed[] = [...blogsSeo, ...blogsLatest, ...blogsCore] as BlogSeed[];
 
-/** For sitemap / static generation */
+/** For sitemap — also mirrored in apps/web/src/lib/blog-sitemap-entries.ts for Docker web-only builds */
 export const blogSitemapEntries = blogs.map((b) => ({
   slug: b.slug,
   publishedAt: b.publishedAt,

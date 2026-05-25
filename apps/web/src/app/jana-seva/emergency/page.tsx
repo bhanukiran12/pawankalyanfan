@@ -6,7 +6,6 @@ import { AlertTriangle } from "lucide-react";
 import { PageShell } from "@/components/layout/section-background";
 import { PageHeading } from "@/components/layout/page-heading";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageLoader } from "@/components/ui/skeleton";
 import { EMERGENCY_CATEGORY_LABELS } from "@/lib/jana-seva";
